@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Link Memo</title>
+<style>
+body{
+  font-family:sans-serif;
+  background:#f0f2f5;
+  padding:30px;
+}
+h1{
+  text-align:center;
+}
+.input-area{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+input{
+  padding:8px;
+  margin:5px 0;
+  width:95%;
+}
+button{
+  padding:8px 12px;
+  margin-top:5px;
+  cursor:pointer;
+}
+.memo{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+a{
+  color:blue;
+  text-decoration:none;
+}
+a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+<body>
+
+<h1>📎 My Link Memo</h1>
+
+<div class="input-area">
+  <input type="text" id="title" placeholder="タイトル">
+  <input type="text" id="url" placeholder="https://example.com">
+  <button onclick="addMemo()">追加</button>
+</div>
+
+<div id="memoList"></div>
+
+<script>
+let memos = JSON.parse(localStorage.getItem("memos")) || [];
+
+function save(){
+  localStorage.setItem("memos", JSON.stringify(memos));
+}
+
+function render(){
+  const list = document.getElementById("memoList");
+  list.innerHTML = "";
+  memos.forEach((memo, index) => {
+    list.innerHTML += `
+      <div class="memo">
+        <strong>${memo.title}</strong><br>
+        <a href="${memo.url}" target="_blank">${memo.url}</a><br>
+        <button onclick="deleteMemo(${index})">削除</button>
+      </div>
+    `;
+  });
+}
+
+function addMemo(){
+  const title = document.getElementById("title").value;
+  const url = document.getElementById("url").value;
+  if(title && url){
+    memos.push({title, url});
+    save();
+    render();
+    document.getElementById("title").value="";
+    document.getElementById("url").value="";
+  }
+}
+
+function deleteMemo(index){
+  memos.splice(index,1);
+  save();
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
