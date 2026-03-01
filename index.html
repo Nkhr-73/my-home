@@ -136,6 +136,37 @@ button{
 .show{
   display:block;
 }
+  .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  aspect-ratio: 1 / 1;   /* ← 正方形にする神プロパティ */
+  background: linear-gradient(135deg, #1f1f2e, #2c2c44);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: 0.2s;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.card-title {
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+  z-index: 2;
+}
 </style>
 </head>
 
@@ -188,18 +219,19 @@ function render(){
   });
 }
 
-function addMemo(){
-  const title = document.getElementById("title").value.trim();
-  const url = document.getElementById("url").value.trim();
+function addMemo(title, url) {
+  const card = document.createElement("div");
+  card.className = "card";
 
-  if(!title || !url) return;
+  card.innerHTML = `
+    <div class="card-title">${title}</div>
+  `;
 
-  memos.push({title, url});
-  save();
-  render();
+  card.onclick = () => {
+    window.open(url, "_blank");
+  };
 
-  document.getElementById("title").value="";
-  document.getElementById("url").value="";
+  document.getElementById("memoList").appendChild(card);
 }
 
 function deleteMemo(index){
