@@ -1,60 +1,106 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>My Link Memo</title>
+
 <style>
 body{
-  font-family:sans-serif;
-  background:#f0f2f5;
-  padding:30px;
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg,#1e1e2f,#12121a);
+  color:white;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
 }
+
 h1{
-  text-align:center;
+  margin-top:40px;
+  font-weight:300;
+  letter-spacing:2px;
 }
+
+.container{
+  width:90%;
+  max-width:600px;
+  margin-top:30px;
+}
+
 .input-area{
-  background:white;
-  padding:15px;
-  border-radius:10px;
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.08);
+  padding:20px;
+  border-radius:15px;
   margin-bottom:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
 }
+
 input{
-  padding:8px;
-  margin:5px 0;
-  width:95%;
-}
-button{
-  padding:8px 12px;
-  margin-top:5px;
-  cursor:pointer;
-}
-.memo{
-  background:white;
-  padding:15px;
-  border-radius:10px;
+  width:100%;
+  padding:10px;
   margin-bottom:10px;
+  border:none;
+  border-radius:8px;
+  outline:none;
 }
-a{
-  color:blue;
+
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:#6c63ff;
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#5750d6;
+}
+
+.memo{
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.08);
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.4);
+  animation:fadeIn 0.3s ease;
+}
+
+.memo a{
+  color:#8ab4ff;
   text-decoration:none;
 }
-a:hover{
+
+.memo a:hover{
   text-decoration:underline;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
+
 <body>
 
-<h1>📎 My Link Memo</h1>
+<h1>My Link Memo</h1>
+
+<div class="container">
 
 <div class="input-area">
-  <input type="text" id="title" placeholder="タイトル">
+  <input type="text" id="title" placeholder="Title">
   <input type="text" id="url" placeholder="https://example.com">
-  <button onclick="addMemo()">追加</button>
+  <button onclick="addMemo()">Add</button>
 </div>
 
 <div id="memoList"></div>
+
+</div>
 
 <script>
 let memos = JSON.parse(localStorage.getItem("memos")) || [];
@@ -66,22 +112,22 @@ function save(){
 function render(){
   const list = document.getElementById("memoList");
   list.innerHTML = "";
-  memos.forEach((memo, index) => {
+  memos.forEach((memo,index)=>{
     list.innerHTML += `
       <div class="memo">
         <strong>${memo.title}</strong><br>
-        <a href="${memo.url}" target="_blank">${memo.url}</a><br>
-        <button onclick="deleteMemo(${index})">削除</button>
+        <a href="${memo.url}" target="_blank">${memo.url}</a><br><br>
+        <button onclick="deleteMemo(${index})">Delete</button>
       </div>
     `;
   });
 }
 
 function addMemo(){
-  const title = document.getElementById("title").value;
-  const url = document.getElementById("url").value;
+  const title=document.getElementById("title").value;
+  const url=document.getElementById("url").value;
   if(title && url){
-    memos.push({title, url});
+    memos.push({title,url});
     save();
     render();
     document.getElementById("title").value="";
