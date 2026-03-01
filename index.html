@@ -109,37 +109,12 @@ function save(){
   localStorage.setItem("memos", JSON.stringify(memos));
 }
 
-function render(){
-  const list = document.getElementById("memoList");
-  list.innerHTML = "";
-  memos.forEach((memo,index)=>{
-    list.innerHTML += `
-      <div class="memo">
-        <div class="menu-container">
-          <button class="menu-button" onclick="toggleMenu(${index})">⋮</button>
-          <div class="dropdown" id="menu-${index}">
-            <button onclick="editMemo(${index})">Edit</button>
-            <button onclick="deleteMemo(${index})">Delete</button>
-          </div>
-        </div>
 
-        <a href="${memo.url}" target="_blank">
-          <strong>${memo.title}</strong>
-        </a>
-      </div>
-    `;
-  });
-}
-    `;
-  });
-}
-    `;
-  });
-}
 
 function addMemo(){
   const title=document.getElementById("title").value;
   const url=document.getElementById("url").value;
+
   if(title && url){
     memos.push({title,url});
     save();
