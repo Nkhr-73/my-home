@@ -109,16 +109,21 @@ function save(){
   localStorage.setItem("memos", JSON.stringify(memos));
 }
 
-function render(){
+ function render(){
   const list = document.getElementById("memoList");
   list.innerHTML = "";
   memos.forEach((memo,index)=>{
     list.innerHTML += `
       <div class="memo">
-        <strong>${memo.title}</strong><br>
-        <a href="${memo.url}" target="_blank">${memo.url}</a><br><br>
+        <a href="${memo.url}" target="_blank">
+          <strong>${memo.title}</strong>
+        </a>
+        <br><br>
         <button onclick="deleteMemo(${index})">Delete</button>
       </div>
+    `;
+  });
+}
     `;
   });
 }
