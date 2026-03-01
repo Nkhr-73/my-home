@@ -7,8 +7,8 @@
 <style>
 body{
   margin:0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg,#1e1e2f,#12121a);
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#1f1f2e,#12121a);
   color:white;
   display:flex;
   flex-direction:column;
@@ -29,11 +29,11 @@ h1{
 }
 
 .input-area{
-  backdrop-filter: blur(15px);
-  background: rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
   padding:20px;
   border-radius:15px;
-  margin-bottom:20px;
+  margin-bottom:25px;
   box-shadow:0 8px 30px rgba(0,0,0,0.4);
 }
 
@@ -47,41 +47,80 @@ input{
 }
 
 button{
-  padding:10px 15px;
+  padding:8px 12px;
   border:none;
   border-radius:8px;
-  background:#6c63ff;
-  color:white;
   cursor:pointer;
-  transition:0.3s;
 }
 
-button:hover{
-  background:#5750d6;
+.add-btn{
+  background:#6c63ff;
+  color:white;
+}
+
+.add-btn:hover{
+  background:#574fd6;
 }
 
 .memo{
-  backdrop-filter: blur(15px);
-  background: rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
   padding:15px;
   border-radius:15px;
   margin-bottom:15px;
   box-shadow:0 5px 20px rgba(0,0,0,0.4);
-  animation:fadeIn 0.3s ease;
+  position:relative;
 }
 
 .memo a{
   color:#8ab4ff;
   text-decoration:none;
+  font-size:18px;
 }
 
 .memo a:hover{
   text-decoration:underline;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:translateY(0);}
+.menu{
+  position:absolute;
+  top:10px;
+  right:10px;
+}
+
+.menu-btn{
+  background:none;
+  color:white;
+  font-size:20px;
+  border:none;
+  cursor:pointer;
+}
+
+.dropdown{
+  display:none;
+  position:absolute;
+  right:0;
+  background:#2a2a3d;
+  border-radius:8px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.5);
+  overflow:hidden;
+  margin-top:5px;
+}
+
+.dropdown button{
+  width:100%;
+  background:none;
+  color:white;
+  padding:8px 12px;
+  text-align:left;
+}
+
+.dropdown button:hover{
+  background:#3a3a55;
+}
+
+.show{
+  display:block;
 }
 </style>
 </head>
@@ -95,7 +134,7 @@ button:hover{
 <div class="input-area">
   <input type="text" id="title" placeholder="Title">
   <input type="text" id="url" placeholder="https://example.com">
-  <button onclick="addMemo()">Add</button>
+  <button class="add-btn" onclick="addMemo()">Add</button>
 </div>
 
 <div id="memoList"></div>
@@ -109,25 +148,74 @@ function save(){
   localStorage.setItem("memos", JSON.stringify(memos));
 }
 
+function render(){
+  const list = document.getElementById("memoList");
+  list.innerHTML = "";
 
+  memos.forEach((memo,index)=>{
+    const div = document.createElement("div");
+    div.className = "memo";
+
+    div.innerHTML = `
+      <div class="menu">
+        <button class="menu-btn" onclick="toggleMenu(${index})">⋮</button>
+        <div class="dropdown" id="menu-${index}">
+          <button onclick="editMemo(${index})">Edit</button>
+          <button onclick="deleteMemo(${index})">Delete</button>
+        </div>
+      </div>
+
+      <a href="${memo.url}" target="_blank">
+        <strong>${memo.title}</strong>
+      </a>
+    `;
+
+    list.appendChild(div);
+  });
+}
 
 function addMemo(){
-  const title=document.getElementById("title").value;
-  const url=document.getElementById("url").value;
+  const title = document.getElementById("title").value.trim();
+  const url = document.getElementById("url").value.trim();
 
-  if(title && url){
-    memos.push({title,url});
-    save();
-    render();
-    document.getElementById("title").value="";
-    document.getElementById("url").value="";
-  }
+  if(!title || !url) return;
+
+  memos.push({title, url});
+  save();
+  render();
+
+  document.getElementById("title").value="";
+  document.getElementById("url").value="";
 }
 
 function deleteMemo(index){
   memos.splice(index,1);
   save();
   render();
+}
+
+function editMemo(index){
+  const newTitle = prompt("New title", memos[index].title);
+  const newUrl = prompt("New URL", memos[index].url);
+
+  if(newTitle && newUrl){
+    memos[index] = {title:newTitle.trim(), url:newUrl.trim()};
+    save();
+    render();
+  }
+}
+
+function toggleMenu(index){
+  const menu = document.getElementById(`menu-${index}`);
+  menu.classList.toggle("show");
+}
+
+window.onclick = function(event){
+  if(!event.target.matches('.menu-btn')){
+    document.querySelectorAll(".dropdown").forEach(d=>{
+      d.classList.remove("show");
+    });
+  }
 }
 
 render();
