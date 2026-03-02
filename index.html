@@ -13,19 +13,25 @@ body {
   font-family: sans-serif;
   background: #0f0f1a;
   color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* 横中央 */
 }
 
 header {
-  padding: 15px 20px;
+  padding: 20px;
   font-size: 18px;
   font-weight: bold;
+  text-align: center;
 }
 
 .input-area {
-  padding: 15px 20px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 input {
@@ -51,8 +57,9 @@ button {
   display: grid;
   grid-template-columns: repeat(auto-fill, 60px);
   gap: 12px;
-  padding: 20px;
-  justify-content: center; /* 中央ぞろえ */
+  justify-content: center;  /* タイル中央 */
+  max-width: 500px;
+  width: 100%;
 }
 
 .card {
@@ -65,15 +72,11 @@ button {
   justify-content: center;
   position: relative;
   cursor: grab;
-  transition: 0.15s;
   font-size: 11px;
   font-weight: bold;
   text-align: center;
+  transition: 0.15s;
   user-select: none;
-}
-
-.card:active {
-  cursor: grabbing;
 }
 
 .card:hover {
@@ -118,44 +121,7 @@ button {
 .dropdown button:hover {
   background: #3d3d5c;
 }
-  body {
-  margin: 0;
-  font-family: sans-serif;
-  background: #0f0f1a;
-  color: white;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;   /* 横中央 */
-}
-
-header {
-  padding: 15px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-}
-
-.input-area {
-  padding: 15px 20px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;   /* 入力欄中央 */
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 60px);
-  gap: 12px;
-  padding: 20px;
-  justify-content: center;   /* タイル中央 */
-  max-width: 500px;          /* 広がりすぎ防止 */
-  width: 100%;
-}
 </style>
-
 </head>
 
 <body>
@@ -172,7 +138,6 @@ header {
 
 <script>
 let links = JSON.parse(localStorage.getItem("links")) || [];
-
 const grid = document.getElementById("grid");
 
 function save() {
@@ -182,9 +147,10 @@ function save() {
 function render() {
   grid.innerHTML = "";
 
-  links.forEach((link) => {
+  links.forEach((link, index) => {
     const card = document.createElement("div");
     card.className = "card";
+    card.dataset.id = index;
 
     card.innerHTML = `
       <div class="menu-btn">⋯</div>
@@ -200,7 +166,6 @@ function render() {
       window.open(link.url, "_blank");
     });
 
-    // メニューボタン
     const menuBtn = card.querySelector(".menu-btn");
     const dropdown = card.querySelector(".dropdown");
 
@@ -210,7 +175,6 @@ function render() {
       dropdown.style.display = "flex";
     });
 
-    // 編集
     card.querySelector(".edit").addEventListener("click", (e) => {
       e.stopPropagation();
       const newTitle = prompt("新しいタイトル", link.title);
@@ -222,10 +186,9 @@ function render() {
       render();
     });
 
-    // 削除
     card.querySelector(".delete").addEventListener("click", (e) => {
       e.stopPropagation();
-      links = links.filter(l => l !== link);
+      links.splice(index, 1);
       save();
       render();
     });
@@ -234,24 +197,21 @@ function render() {
   });
 }
 
-// 外クリックでメニュー閉じる
 document.addEventListener("click", () => {
   document.querySelectorAll(".dropdown").forEach(d => d.style.display = "none");
 });
 
-// 並び替え（←ここは1回だけ）
 new Sortable(grid, {
   animation: 150,
   ghostClass: "dragging",
   onEnd: function () {
     const newLinks = [];
     document.querySelectorAll(".card").forEach(card => {
-      const text = card.textContent.trim();
-      const original = links.find(l => l.title.slice(0,2) === text);
-      if (original) newLinks.push(original);
+      newLinks.push(links[card.dataset.id]);
     });
     links = newLinks;
     save();
+    render();
   }
 });
 
