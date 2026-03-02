@@ -15,6 +15,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
+  transition:background .3s;
 }
 
 header{
@@ -47,6 +48,21 @@ button{
   cursor:pointer;
 }
 
+.color-picker{
+  margin:15px 0;
+  display:grid;
+  grid-template-columns:repeat(12,20px);
+  gap:6px;
+}
+
+.color-cell{
+  width:20px;
+  height:20px;
+  border-radius:4px;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.2);
+}
+
 .category-section{
   width:90%;
   max-width:600px;
@@ -62,10 +78,6 @@ button{
   display:flex;
   justify-content:space-between;
   align-items:center;
-}
-
-.arrow{
-  transition:transform .2s;
 }
 
 .arrow.closed{
@@ -107,6 +119,8 @@ button{
 
 <header>My Home</header>
 
+<div class="color-picker" id="colorPicker"></div>
+
 <div class="input-area">
   <input type="text" id="titleInput" placeholder="タイトル">
   <input type="text" id="urlInput" placeholder="URL">
@@ -121,14 +135,34 @@ button{
 let links = JSON.parse(localStorage.getItem("links")) || [];
 let categories = JSON.parse(localStorage.getItem("categories")) || ["その他"];
 let categoryState = JSON.parse(localStorage.getItem("categoryState")) || {};
+let bgColor = localStorage.getItem("bgColor") || "#0f0f1a";
+
+document.body.style.background = bgColor;
 
 const container = document.getElementById("container");
 const categorySelect = document.getElementById("categorySelect");
+const colorPicker = document.getElementById("colorPicker");
 
 function save(){
   localStorage.setItem("links",JSON.stringify(links));
   localStorage.setItem("categories",JSON.stringify(categories));
   localStorage.setItem("categoryState",JSON.stringify(categoryState));
+  localStorage.setItem("bgColor",bgColor);
+}
+
+function createColorGrid(){
+  for(let h=0;h<360;h+=15){
+    const cell=document.createElement("div");
+    const color=`hsl(${h},70%,25%)`;
+    cell.className="color-cell";
+    cell.style.background=color;
+    cell.addEventListener("click",()=>{
+      bgColor=color;
+      document.body.style.background=color;
+      save();
+    });
+    colorPicker.appendChild(cell);
+  }
 }
 
 function updateCategorySelect(){
@@ -144,10 +178,7 @@ function updateCategorySelect(){
 function createCategory(){
   const name=prompt("新しいカテゴリー名を入力");
   if(!name) return;
-  if(categories.includes(name)){
-    alert("そのカテゴリーは既にあります");
-    return;
-  }
+  if(categories.includes(name)) return alert("既に存在します");
   categories.push(name);
   categoryState[name]=true;
   save();
@@ -157,7 +188,6 @@ function createCategory(){
 
 function render(){
   container.innerHTML="";
-
   categories.forEach(category=>{
 
     if(categoryState[category]===undefined){
@@ -171,22 +201,15 @@ function render(){
     title.className="category-title";
 
     const arrow=document.createElement("span");
-    arrow.className="arrow";
     arrow.textContent="▶";
-
-    if(!categoryState[category]){
-      arrow.classList.add("closed");
-    }
+    if(!categoryState[category]) arrow.classList.add("closed");
 
     title.innerHTML=`<span>${category}</span>`;
     title.appendChild(arrow);
 
     const grid=document.createElement("div");
     grid.className="grid";
-
-    if(!categoryState[category]){
-      grid.classList.add("hidden");
-    }
+    if(!categoryState[category]) grid.classList.add("hidden");
 
     title.addEventListener("click",()=>{
       categoryState[category]=!categoryState[category];
@@ -194,43 +217,20 @@ function render(){
       render();
     });
 
-    // このカテゴリーのリンクだけ表示
-    links
-      .filter(link=>link.category===category)
-      .forEach((link,index)=>{
-        const card=document.createElement("div");
-        card.className="card";
-        card.textContent=link.title.slice(0,2);
-        card.dataset.index = links.indexOf(link);
-
-        card.addEventListener("click",()=>{
-          window.open(link.url,"_blank");
-        });
-
-        grid.appendChild(card);
-      });
+    links.filter(l=>l.category===category)
+    .forEach(link=>{
+      const card=document.createElement("div");
+      card.className="card";
+      card.textContent=link.title.slice(0,2);
+      card.onclick=()=>window.open(link.url,"_blank");
+      grid.appendChild(card);
+    });
 
     section.appendChild(title);
     section.appendChild(grid);
     container.appendChild(section);
 
-    // 並び替え保持対応
-    new Sortable(grid,{
-      animation:150,
-      onEnd:function(){
-        const newOrder=[];
-        grid.querySelectorAll(".card").forEach(card=>{
-          newOrder.push(links[card.dataset.index]);
-        });
-
-        // 他カテゴリーと合体
-        const others = links.filter(l=>l.category!==category);
-        links = [...others, ...newOrder];
-        save();
-        render();
-      }
-    });
-
+    new Sortable(grid,{animation:150});
   });
 }
 
@@ -238,17 +238,15 @@ function addLink(){
   const title=document.getElementById("titleInput").value.trim();
   const url=document.getElementById("urlInput").value.trim();
   const category=categorySelect.value;
-
   if(!title||!url) return;
-
   links.push({title,url,category});
   save();
   render();
-
   document.getElementById("titleInput").value="";
   document.getElementById("urlInput").value="";
 }
 
+createColorGrid();
 updateCategorySelect();
 render();
 </script>
