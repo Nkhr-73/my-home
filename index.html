@@ -121,7 +121,7 @@ button {
 
 
 <div class="input-area">
-  <input type="text" id="titleInput" placeholder="タイトル">
+  <input type="text" id="titleInput" placeholder="Tytle">
   <input type="text" id="urlInput" placeholder="URL">
   <button class="add-btn" onclick="addLink()">追加</button>
 </div>
@@ -146,8 +146,8 @@ function render() {
     card.innerHTML = `
       <div class="menu-btn" onclick="toggleMenu(event, ${index})">⋯</div>
       <div class="dropdown" id="menu-${index}">
-        <button onclick="editLink(${index})">編集</button>
-        <button onclick="deleteLink(${index})">削除</button>
+        <button onclick="editLink(${index})">Edit</button>
+        <button onclick="deleteLink(${index})">Delete</button>
       </div>
       ${link.title.slice(0, 2)}
     `;
