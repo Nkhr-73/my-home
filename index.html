@@ -118,6 +118,42 @@ button {
 .dropdown button:hover {
   background: #3d3d5c;
 }
+  body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #0f0f1a;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* 横中央 */
+}
+
+header {
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+
+.input-area {
+  padding: 15px 20px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;   /* 入力欄中央 */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 60px);
+  gap: 12px;
+  padding: 20px;
+  justify-content: center;   /* タイル中央 */
+  max-width: 500px;          /* 広がりすぎ防止 */
+  width: 100%;
+}
 </style>
 </head>
 
