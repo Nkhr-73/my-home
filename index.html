@@ -49,17 +49,34 @@ header {
 }
 
 .links {
-  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 15px;
 }
 
 .link-item a {
   text-decoration: none;
   color: #007aff;
   font-weight: 400;
+  font-size: 14px;
 }
 
 .link-item {
-  padding: 8px 0;
+  flex: 0 0 calc(50% - 6px); /* 2列 */
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+  @media (max-width: 500px) {
+  .link-item {
+    flex: 0 0 100%;
+  }
 }
 
 button {
