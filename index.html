@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <title>My home</title>
 <style>
-body {
-  margin: 0;
-  font-family: 'Noto Sans JP', sans-serif;
+
 header {
-  padding: 15px;
+  padding: 18px;
   background: #333;
   color: white;
   text-align: center;
+  font-weight: 500;
 }
 
 .container {
   padding: 20px;
 }
+        body {
+  margin: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
 
 .category {
   margin-bottom: 15px;
   border-radius: 8px;
-  background: rgba(255,255,255,0.8);
-  padding: 10px;
+  background: rgba(255,255,255,0.9);
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .category h2 {
   margin: 0;
-  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 .links {
@@ -44,10 +51,8 @@ header {
 }
 
 button {
-  cursor: pointer;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-family: inherit;
 }
 
 .add-btn {
