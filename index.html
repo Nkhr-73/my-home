@@ -2,252 +2,241 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Home</title>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
+<title>リンクまとめ</title>
 <style>
-body{
-  margin:0;
-  font-family:sans-serif;
-  background:#0f0f1a;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  transition:background .3s;
+body {
+  margin: 0;
+  font-family: sans-serif;
+  transition: background 0.3s;
 }
 
-header{
-  padding:20px;
-  font-size:20px;
-  font-weight:bold;
+header {
+  padding: 15px;
+  background: #333;
+  color: white;
+  text-align: center;
 }
 
-.input-area{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  justify-content:center;
-  margin-bottom:20px;
+.container {
+  padding: 20px;
 }
 
-input,select{
-  padding:6px 8px;
-  border-radius:6px;
-  border:none;
-  outline:none;
+.category {
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.8);
+  padding: 10px;
 }
 
-button{
-  background:#5c7cfa;
-  color:white;
-  border:none;
-  padding:8px 14px;
-  border-radius:6px;
-  cursor:pointer;
+.category h2 {
+  margin: 0;
+  cursor: pointer;
 }
 
-.color-picker{
-  margin:15px 0;
-  display:grid;
-  grid-template-columns:repeat(12,20px);
-  gap:6px;
+.links {
+  margin-top: 10px;
 }
 
-.color-cell{
-  width:20px;
-  height:20px;
-  border-radius:4px;
-  cursor:pointer;
-  border:1px solid rgba(255,255,255,0.2);
+.link-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
 }
 
-.category-section{
-  width:90%;
-  max-width:600px;
-  margin-bottom:20px;
+button {
+  cursor: pointer;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
-.category-title{
-  font-size:16px;
-  margin-bottom:10px;
-  border-left:4px solid #5c7cfa;
-  padding-left:8px;
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.add-btn {
+  margin-top: 10px;
+  background: #4CAF50;
+  color: white;
 }
 
-.arrow.closed{
-  transform:rotate(-90deg);
+.delete-btn {
+  background: #f44336;
+  color: white;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,60px);
-  gap:12px;
+#editorPanel {
+  position: fixed;
+  bottom: 60px;
+  left: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  display: none;
+  width: 250px;
 }
 
-.card{
-  width:60px;
-  height:60px;
-  background:linear-gradient(135deg,#1c1c2e,#27273f);
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:grab;
-  font-size:11px;
-  font-weight:bold;
-  text-align:center;
-  transition:.15s;
+#editToggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #333;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 30px;
 }
 
-.card:hover{
-  transform:scale(1.08);
+input, select {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 5px;
 }
 
-.hidden{
-  display:none;
-}
 </style>
 </head>
-
 <body>
 
-<header>My Home</header>
+<header>
+  <h1>リンクまとめサイト</h1>
+</header>
 
-<div class="color-picker" id="colorPicker"></div>
+<div class="container" id="categories"></div>
 
-<div class="input-area">
-  <input type="text" id="titleInput" placeholder="タイトル">
-  <input type="text" id="urlInput" placeholder="URL">
+<button id="editToggle">編集</button>
+
+<div id="editorPanel">
+  <h3>リンク追加</h3>
+  <input type="text" id="linkName" placeholder="リンク名">
+  <input type="text" id="linkURL" placeholder="URL">
+  
   <select id="categorySelect"></select>
-  <button onclick="createCategory()">＋新規カテゴリー</button>
-  <button onclick="addLink()">追加</button>
+  <button onclick="addCategory()">＋新しいカテゴリー</button>
+
+  <button class="add-btn" onclick="addLink()">追加</button>
+
+  <hr>
+
+  <h3>背景色変更</h3>
+  <input type="color" id="colorPicker">
+  <label>明るさ</label>
+  <input type="range" id="brightness" min="50" max="150" value="100">
 </div>
 
-<div id="container"></div>
-
 <script>
-let links = JSON.parse(localStorage.getItem("links")) || [];
-let categories = JSON.parse(localStorage.getItem("categories")) || ["その他"];
-let categoryState = JSON.parse(localStorage.getItem("categoryState")) || {};
-let bgColor = localStorage.getItem("bgColor") || "#0f0f1a";
+let data = JSON.parse(localStorage.getItem("linkData")) || {};
 
-document.body.style.background = bgColor;
-
-const container = document.getElementById("container");
+const categoriesDiv = document.getElementById("categories");
 const categorySelect = document.getElementById("categorySelect");
-const colorPicker = document.getElementById("colorPicker");
+const editorPanel = document.getElementById("editorPanel");
 
-function save(){
-  localStorage.setItem("links",JSON.stringify(links));
-  localStorage.setItem("categories",JSON.stringify(categories));
-  localStorage.setItem("categoryState",JSON.stringify(categoryState));
-  localStorage.setItem("bgColor",bgColor);
+function saveData() {
+  localStorage.setItem("linkData", JSON.stringify(data));
 }
 
-function createColorGrid(){
-  for(let h=0;h<360;h+=15){
-    const cell=document.createElement("div");
-    const color=`hsl(${h},70%,25%)`;
-    cell.className="color-cell";
-    cell.style.background=color;
-    cell.addEventListener("click",()=>{
-      bgColor=color;
-      document.body.style.background=color;
-      save();
+function render() {
+  categoriesDiv.innerHTML = "";
+  categorySelect.innerHTML = "";
+
+  for (let category in data) {
+    const catDiv = document.createElement("div");
+    catDiv.className = "category";
+
+    const title = document.createElement("h2");
+    title.textContent = category;
+    title.onclick = () => {
+      linksDiv.style.display =
+        linksDiv.style.display === "none" ? "block" : "none";
+    };
+
+    const linksDiv = document.createElement("div");
+    linksDiv.className = "links";
+
+    data[category].forEach((link, index) => {
+      const linkItem = document.createElement("div");
+      linkItem.className = "link-item";
+
+      const a = document.createElement("a");
+      a.href = link.url;
+      a.textContent = link.name;
+      a.target = "_blank";
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "削除";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = () => {
+        data[category].splice(index, 1);
+        saveData();
+        render();
+      };
+
+      linkItem.appendChild(a);
+      linkItem.appendChild(delBtn);
+      linksDiv.appendChild(linkItem);
     });
-    colorPicker.appendChild(cell);
+
+    catDiv.appendChild(title);
+    catDiv.appendChild(linksDiv);
+    categoriesDiv.appendChild(catDiv);
+
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categorySelect.appendChild(option);
   }
 }
 
-function updateCategorySelect(){
-  categorySelect.innerHTML="";
-  categories.forEach(cat=>{
-    const option=document.createElement("option");
-    option.value=cat;
-    option.textContent=cat;
-    categorySelect.appendChild(option);
-  });
-}
+function addLink() {
+  const name = document.getElementById("linkName").value;
+  const url = document.getElementById("linkURL").value;
+  const category = categorySelect.value;
 
-function createCategory(){
-  const name=prompt("新しいカテゴリー名を入力");
-  if(!name) return;
-  if(categories.includes(name)) return alert("既に存在します");
-  categories.push(name);
-  categoryState[name]=true;
-  save();
-  updateCategorySelect();
+  if (!name || !url || !category) return;
+
+  data[category].push({ name, url });
+  saveData();
   render();
+
+  document.getElementById("linkName").value = "";
+  document.getElementById("linkURL").value = "";
 }
 
-function render(){
-  container.innerHTML="";
-  categories.forEach(category=>{
-
-    if(categoryState[category]===undefined){
-      categoryState[category]=true;
-    }
-
-    const section=document.createElement("div");
-    section.className="category-section";
-
-    const title=document.createElement("div");
-    title.className="category-title";
-
-    const arrow=document.createElement("span");
-    arrow.textContent="▶";
-    if(!categoryState[category]) arrow.classList.add("closed");
-
-    title.innerHTML=`<span>${category}</span>`;
-    title.appendChild(arrow);
-
-    const grid=document.createElement("div");
-    grid.className="grid";
-    if(!categoryState[category]) grid.classList.add("hidden");
-
-    title.addEventListener("click",()=>{
-      categoryState[category]=!categoryState[category];
-      save();
-      render();
-    });
-
-    links.filter(l=>l.category===category)
-    .forEach(link=>{
-      const card=document.createElement("div");
-      card.className="card";
-      card.textContent=link.title.slice(0,2);
-      card.onclick=()=>window.open(link.url,"_blank");
-      grid.appendChild(card);
-    });
-
-    section.appendChild(title);
-    section.appendChild(grid);
-    container.appendChild(section);
-
-    new Sortable(grid,{animation:150});
-  });
+function addCategory() {
+  const newCategory = prompt("カテゴリー名を入力");
+  if (!newCategory) return;
+  if (!data[newCategory]) {
+    data[newCategory] = [];
+    saveData();
+    render();
+  }
 }
 
-function addLink(){
-  const title=document.getElementById("titleInput").value.trim();
-  const url=document.getElementById("urlInput").value.trim();
-  const category=categorySelect.value;
-  if(!title||!url) return;
-  links.push({title,url,category});
-  save();
-  render();
-  document.getElementById("titleInput").value="";
-  document.getElementById("urlInput").value="";
+document.getElementById("editToggle").onclick = () => {
+  editorPanel.style.display =
+    editorPanel.style.display === "none" ? "block" : "none";
+};
+
+const colorPicker = document.getElementById("colorPicker");
+const brightness = document.getElementById("brightness");
+
+function updateBackground() {
+  document.body.style.background =
+    `hsl(${hexToHue(colorPicker.value)}, 60%, ${brightness.value}%)`;
 }
 
-createColorGrid();
-updateCategorySelect();
+colorPicker.oninput = updateBackground;
+brightness.oninput = updateBackground;
+
+function hexToHue(hex) {
+  const r = parseInt(hex.substr(1,2),16)/255;
+  const g = parseInt(hex.substr(3,2),16)/255;
+  const b = parseInt(hex.substr(5,2),16)/255;
+  const max = Math.max(r,g,b);
+  const min = Math.min(r,g,b);
+  let h;
+  if(max === min) h = 0;
+  else if(max === r) h = 60 * ((g-b)/(max-min));
+  else if(max === g) h = 60 * (2+(b-r)/(max-min));
+  else h = 60 * (4+(r-g)/(max-min));
+  return Math.round(h < 0 ? h+360 : h);
+}
+
 render();
 </script>
 
