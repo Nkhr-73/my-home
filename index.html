@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Home</title>
-
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <style>
@@ -20,7 +19,7 @@ body {
 
 header {
   padding: 20px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -40,25 +39,31 @@ input {
 }
 
 button {
-  background-color: #2563eb;
+  background: #5c7cfa;
   color: white;
   border: none;
-  padding: 8px 16px;
-  cursor: pointer;
+  padding: 8px 14px;
   border-radius: 6px;
+  cursor: pointer;
 }
 
-.add-btn {
-  background: #5c7cfa;
+.category-section {
+  width: 90%;
+  max-width: 600px;
+  margin-bottom: 25px;
+}
+
+.category-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-left: 4px solid #5c7cfa;
+  padding-left: 8px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 60px);
   gap: 12px;
-  justify-content: center;
-  max-width: 500px;
-  width: 100%;
 }
 
 .card {
@@ -75,7 +80,6 @@ button {
   font-weight: bold;
   text-align: center;
   transition: 0.15s;
-  user-select: none;
 }
 
 .card:hover {
@@ -84,46 +88,6 @@ button {
 
 .dragging {
   opacity: 0.5;
-}
-
-.title {
-  pointer-events: none;
-}
-
-.menu-btn {
-  position: absolute;
-  top: 3px;
-  right: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.dropdown {
-  position: absolute;
-  top: 20px;
-  right: 0;
-  background: #2c2c44;
-  border-radius: 6px;
-  display: none;
-  flex-direction: column;
-  z-index: 9999;
-  min-width: 70px;
-}
-
-.dropdown button {
-  background: none;
-  color: white;
-  border: none;
-  padding: 6px 8px;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.dropdown button:hover {
-  background: #3d3d5c;
-  color: white;
 }
 </style>
 </head>
@@ -135,101 +99,81 @@ button {
 <div class="input-area">
   <input type="text" id="titleInput" placeholder="タイトル">
   <input type="text" id="urlInput" placeholder="URL">
-  <button class="add-btn" onclick="addLink()">追加</button>
+  <input type="text" id="categoryInput" placeholder="カテゴリー">
+  <button onclick="addLink()">追加</button>
 </div>
 
-<div class="grid" id="grid"></div>
+<div id="container"></div>
 
 <script>
 let links = JSON.parse(localStorage.getItem("links")) || [];
-const grid = document.getElementById("grid");
+const container = document.getElementById("container");
 
 function save() {
   localStorage.setItem("links", JSON.stringify(links));
 }
 
 function render() {
-  grid.innerHTML = "";
+  container.innerHTML = "";
 
-  links.forEach((link, index) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.dataset.id = index;
+  // カテゴリーごとにまとめる
+  const grouped = {};
+  links.forEach(link => {
+    if (!grouped[link.category]) {
+      grouped[link.category] = [];
+    }
+    grouped[link.category].push(link);
+  });
 
-    card.innerHTML = `
-      <div class="menu-btn">⋯</div>
-      <div class="dropdown">
-        <button class="edit">編集</button>
-        <button class="delete">削除</button>
-      </div>
-      <div class="title">${link.title.slice(0,2)}</div>
-    `;
+  Object.keys(grouped).forEach(category => {
 
-    // カードクリックで開く
-    card.addEventListener("click", () => {
-      window.open(link.url, "_blank");
+    const section = document.createElement("div");
+    section.className = "category-section";
+
+    const title = document.createElement("div");
+    title.className = "category-title";
+    title.textContent = category;
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    grouped[category].forEach(link => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.textContent = link.title.slice(0,2);
+
+      card.addEventListener("click", () => {
+        window.open(link.url, "_blank");
+      });
+
+      grid.appendChild(card);
     });
 
-    const menuBtn = card.querySelector(".menu-btn");
-    const dropdown = card.querySelector(".dropdown");
+    section.appendChild(title);
+    section.appendChild(grid);
+    container.appendChild(section);
 
-    menuBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      document.querySelectorAll(".dropdown").forEach(d => d.style.display = "none");
-      dropdown.style.display = "flex";
+    new Sortable(grid, {
+      animation: 150,
+      ghostClass: "dragging"
     });
-
-    card.querySelector(".edit").addEventListener("click", (e) => {
-      e.stopPropagation();
-      const newTitle = prompt("新しいタイトル", link.title);
-      const newUrl = prompt("新しいURL", link.url);
-      if (!newTitle || !newUrl) return;
-      link.title = newTitle.trim();
-      link.url = newUrl.trim();
-      save();
-      render();
-    });
-
-    card.querySelector(".delete").addEventListener("click", (e) => {
-      e.stopPropagation();
-      links.splice(index, 1);
-      save();
-      render();
-    });
-
-    grid.appendChild(card);
   });
 }
-
-document.addEventListener("click", () => {
-  document.querySelectorAll(".dropdown").forEach(d => d.style.display = "none");
-});
-
-new Sortable(grid, {
-  animation: 150,
-  ghostClass: "dragging",
-  onEnd: function () {
-    const newLinks = [];
-    document.querySelectorAll(".card").forEach(card => {
-      newLinks.push(links[card.dataset.id]);
-    });
-    links = newLinks;
-    save();
-    render();
-  }
-});
 
 function addLink() {
   const title = document.getElementById("titleInput").value.trim();
   const url = document.getElementById("urlInput").value.trim();
+  const category = document.getElementById("categoryInput").value.trim() || "その他";
+
   if (!title || !url) return;
 
-  links.push({ title, url });
+  links.push({ title, url, category });
   save();
   render();
 
   document.getElementById("titleInput").value = "";
   document.getElementById("urlInput").value = "";
+  document.getElementById("categoryInput").value = "";
 }
 
 render();
