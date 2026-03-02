@@ -1,268 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>My Link Memo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Home</title>
 
 <style>
-body{
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  background:linear-gradient(135deg,#1f1f2e,#12121a);
-  color:white;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  min-height:100vh;
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #0f0f1a;
+  color: white;
 }
 
-h1{
-  margin-top:40px;
-  font-weight:300;
-  letter-spacing:2px;
+header {
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.container{
-  width:90%;
-  max-width:600px;
-  margin-top:30px;
+.input-area {
+  padding: 15px 20px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.input-area{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(15px);
-  padding:20px;
-  border-radius:15px;
-  margin-bottom:25px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+input {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
 }
 
-input{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border:none;
-  border-radius:8px;
-  outline:none;
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-button{
-  padding:8px 12px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+.add-btn {
+  background: #5c7cfa;
+  color: white;
 }
 
-.add-btn{
-  background:#6c63ff;
-  color:white;
-}
-
-.add-btn:hover{
-  background:#574fd6;
-}
-
-.memo{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(15px);
-  padding:15px;
-  border-radius:15px;
-  margin-bottom:15px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.4);
-  position:relative;
-}
-
-.memo a{
-  color:#8ab4ff;
-  text-decoration:none;
-  font-size:18px;
-}
-
-.memo a:hover{
-  text-decoration:underline;
-}
-
-.menu{
-  position:absolute;
-  top:10px;
-  right:10px;
-}
-
-.menu-btn{
-  background:none;
-  color:white;
-  font-size:20px;
-  border:none;
-  cursor:pointer;
-}
-
-.dropdown{
-  display:none;
-  position:absolute;
-  right:0;
-  background:#2a2a3d;
-  border-radius:8px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.5);
-  overflow:visible;
-  margin-top:5px;
-}
-
-.dropdown button{
-  width:100%;
-  background:none;
-  color:white;
-  padding:8px 12px;
-  text-align:left;
-}
-
-.dropdown button:hover{
-  background:#3a3a55;
-}
-.menu {
-  position: relative;
-  z-index: 1000;
-}
-
-.dropdown {
-  position: absolute;
-  right: 0;
-  background: #2a2a3d;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  overflow: hidden;
-  margin-top: 8px;
-  z-index: 9999; /* ← ここを最前面 */
-}
-.show{
-  display:block;
-}
-  .grid {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, 60px);
+  gap: 12px;
   padding: 20px;
 }
 
 .card {
-  aspect-ratio: 1 / 1;   /* ← 正方形にする神プロパティ */
-  background: linear-gradient(135deg, #1f1f2e, #2c2c44);
-  border-radius: 20px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #1c1c2e, #27273f);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   cursor: pointer;
-  transition: 0.2s;
-  overflow: hidden;
+  transition: 0.15s;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  transform: scale(1.08);
 }
 
-.card-title {
-  text-align: center;
-  padding: 10px;
-  font-weight: bold;
-  z-index: 2;
+.menu-btn {
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.dropdown {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  background: #2c2c44;
+  border-radius: 6px;
+  display: none;
+  flex-direction: column;
+  z-index: 9999;
+  min-width: 70px;
+}
+
+.dropdown button {
+  background: none;
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #3d3d5c;
 }
 </style>
 </head>
 
 <body>
 
-<h1>My Link Memo</h1>
-
-<div class="container">
+<header>My Home</header>
 
 <div class="input-area">
-  <input type="text" id="title" placeholder="Title">
-  <input type="text" id="url" placeholder="https://example.com">
-  <button class="add-btn" onclick="addMemo()">Add</button>
+  <input type="text" id="titleInput" placeholder="タイトル">
+  <input type="text" id="urlInput" placeholder="URL">
+  <button class="add-btn" onclick="addLink()">追加</button>
 </div>
 
-<div id="memoList"></div>
-
-</div>
+<div class="grid" id="grid"></div>
 
 <script>
-let memos = JSON.parse(localStorage.getItem("memos")) || [];
+let links = JSON.parse(localStorage.getItem("links")) || [];
 
-function save(){
-  localStorage.setItem("memos", JSON.stringify(memos));
+function save() {
+  localStorage.setItem("links", JSON.stringify(links));
 }
 
-function render(){
-  const list = document.getElementById("memoList");
-  list.innerHTML = "";
+function render() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-  memos.forEach((memo,index)=>{
-    const div = document.createElement("div");
-    div.className = "memo";
+  links.forEach((link, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-    div.innerHTML = `
-      <div class="menu">
-        <button class="menu-btn" onclick="toggleMenu(${index})">⋮</button>
-        <div class="dropdown" id="menu-${index}">
-          <button onclick="editMemo(${index})">Edit</button>
-          <button onclick="deleteMemo(${index})">Delete</button>
-        </div>
+    card.innerHTML = `
+      <div class="menu-btn" onclick="toggleMenu(event, ${index})">⋯</div>
+      <div class="dropdown" id="menu-${index}">
+        <button onclick="editLink(${index})">編集</button>
+        <button onclick="deleteLink(${index})">削除</button>
       </div>
-
-      <a href="${memo.url}" target="_blank">
-        <strong>${memo.title}</strong>
-      </a>
+      ${link.title.slice(0, 2)}
     `;
 
-    list.appendChild(div);
+    card.onclick = () => {
+      window.open(link.url, "_blank");
+    };
+
+    grid.appendChild(card);
   });
 }
 
-function addMemo(title, url) {
-  const card = document.createElement("div");
-  card.className = "card";
+function addLink() {
+  const title = document.getElementById("titleInput").value.trim();
+  const url = document.getElementById("urlInput").value.trim();
+  if (!title || !url) return;
 
-  card.innerHTML = `
-    <div class="card-title">${title}</div>
-  `;
+  links.push({ title, url });
+  save();
+  render();
 
-  card.onclick = () => {
-    window.open(url, "_blank");
-  };
-
-  document.getElementById("memoList").appendChild(card);
+  document.getElementById("titleInput").value = "";
+  document.getElementById("urlInput").value = "";
 }
 
-function deleteMemo(index){
-  memos.splice(index,1);
+function deleteLink(index) {
+  links.splice(index, 1);
   save();
   render();
 }
 
-function editMemo(index){
-  const newTitle = prompt("New title", memos[index].title);
-  const newUrl = prompt("New URL", memos[index].url);
+function editLink(index) {
+  const newTitle = prompt("新しいタイトル", links[index].title);
+  const newUrl = prompt("新しいURL", links[index].url);
+  if (!newTitle || !newUrl) return;
 
-  if(newTitle && newUrl){
-    memos[index] = {title:newTitle.trim(), url:newUrl.trim()};
-    save();
-    render();
-  }
+  links[index] = { title: newTitle.trim(), url: newUrl.trim() };
+  save();
+  render();
 }
 
-function toggleMenu(index){
+function toggleMenu(event, index) {
+  event.stopPropagation();
+  document.querySelectorAll(".dropdown").forEach(menu => menu.style.display = "none");
   const menu = document.getElementById(`menu-${index}`);
-  menu.classList.toggle("show");
+  menu.style.display = "flex";
 }
 
-window.onclick = function(event){
-  if(!event.target.matches('.menu-btn')){
-    document.querySelectorAll(".dropdown").forEach(d=>{
-      d.classList.remove("show");
-    });
-  }
-}
+document.addEventListener("click", () => {
+  document.querySelectorAll(".dropdown").forEach(menu => menu.style.display = "none");
+});
 
 render();
 </script>
