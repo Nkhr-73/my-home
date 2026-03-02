@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title>My home</title>
 <style>
-
+  
 header {
   padding: 30px 20px;
   text-align: center;
@@ -108,6 +108,24 @@ input, select {
   margin-bottom: 8px;
   padding: 5px;
 }
+  #clockContainer {
+  text-align: center;
+  margin-top: -10px;
+  margin-bottom: 30px;
+}
+
+#clock {
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 2px;
+}
+
+#date {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(0,0,0,0.6);
+  margin-top: 5px;
+}
 
 </style>
 </head>
@@ -116,7 +134,10 @@ input, select {
 <header>
   <h1>my home</h1>
 </header>
-
+<div id="clockContainer">
+  <div id="clock"></div>
+  <div id="date"></div>
+</div>
 <div class="container" id="categories"></div>
 
 <button id="editToggle">編集</button>
@@ -256,6 +277,23 @@ function hexToHue(hex) {
   else h = 60 * (4+(r-g)/(max-min));
   return Math.round(h < 0 ? h+360 : h);
 }
+  function updateClock() {
+  const now = new Date();
+
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  document.getElementById("clock").textContent =
+    `${hours}:${minutes}:${seconds}`;
+
+  const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  document.getElementById("date").textContent =
+    now.toLocaleDateString('ja-JP', options);
+}
+
+setInterval(updateClock, 1000);
+updateClock();
 
 render();
 </script>
