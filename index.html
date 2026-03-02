@@ -50,7 +50,7 @@ button {
 .category-section {
   width: 90%;
   max-width: 600px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .category-title {
@@ -58,6 +58,19 @@ button {
   margin-bottom: 10px;
   border-left: 4px solid #5c7cfa;
   padding-left: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.arrow.closed {
+  transform: rotate(-90deg);
 }
 
 .grid {
@@ -74,8 +87,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  cursor: grab;
+  cursor: pointer;
   font-size: 11px;
   font-weight: bold;
   text-align: center;
@@ -88,6 +100,10 @@ button {
 
 .dragging {
   opacity: 0.5;
+}
+
+.hidden {
+  display: none;
 }
 </style>
 </head>
@@ -107,45 +123,66 @@ button {
 
 <script>
 let links = JSON.parse(localStorage.getItem("links")) || [];
+let categoryState = JSON.parse(localStorage.getItem("categoryState")) || {};
 const container = document.getElementById("container");
 
 function save() {
   localStorage.setItem("links", JSON.stringify(links));
+  localStorage.setItem("categoryState", JSON.stringify(categoryState));
 }
 
 function render() {
   container.innerHTML = "";
 
-  // カテゴリーごとにまとめる
   const grouped = {};
   links.forEach(link => {
-    if (!grouped[link.category]) {
-      grouped[link.category] = [];
-    }
+    if (!grouped[link.category]) grouped[link.category] = [];
     grouped[link.category].push(link);
   });
 
   Object.keys(grouped).forEach(category => {
+
+    if (categoryState[category] === undefined) {
+      categoryState[category] = true; // デフォルト開く
+    }
 
     const section = document.createElement("div");
     section.className = "category-section";
 
     const title = document.createElement("div");
     title.className = "category-title";
-    title.textContent = category;
+
+    const arrow = document.createElement("span");
+    arrow.className = "arrow";
+    arrow.textContent = "▶";
+
+    if (!categoryState[category]) {
+      arrow.classList.add("closed");
+    }
+
+    title.innerHTML = `<span>${category}</span>`;
+    title.appendChild(arrow);
 
     const grid = document.createElement("div");
     grid.className = "grid";
+
+    if (!categoryState[category]) {
+      grid.classList.add("hidden");
+    }
+
+    title.addEventListener("click", () => {
+      categoryState[category] = !categoryState[category];
+      save();
+      render();
+    });
 
     grouped[category].forEach(link => {
       const card = document.createElement("div");
       card.className = "card";
       card.textContent = link.title.slice(0,2);
-
       card.addEventListener("click", () => {
         window.open(link.url, "_blank");
       });
-
       grid.appendChild(card);
     });
 
