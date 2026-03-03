@@ -178,16 +178,18 @@ input, select {
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("linkData")) || {};
+  const STORAGE_KEY = "myLinkAppData_v1";
+
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
 const categoriesDiv = document.getElementById("categories");
 const categorySelect = document.getElementById("categorySelect");
 const editorPanel = document.getElementById("editorPanel");
 
 function saveData() {
-  localStorage.setItem("linkData", JSON.stringify(data));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
-
+  
 function render() {
   categoriesDiv.innerHTML = "";
   categorySelect.innerHTML = "";
