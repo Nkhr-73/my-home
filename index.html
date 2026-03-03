@@ -173,12 +173,16 @@ input, select {
 
   <h3>背景色変更</h3>
   <input type="color" id="colorPicker">
-  <label>明るさ</label>
-  <input type="range" id="brightness" min="50" max="150" value="100">
+
+<hr>
+<h3>自動バックアップ</h3>
+<div id="backupList">
+  
 </div>
 
 <script>
   const STORAGE_KEY = "myLinkAppData_v1";
+  const BACKUP_KEY = "myLinkAppBackups_v1";
 
 let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
@@ -187,7 +191,33 @@ const categorySelect = document.getElementById("categorySelect");
 const editorPanel = document.getElementById("editorPanel");
 
 function saveData() {
+  // 通常保存
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+  // バックアップ取得
+  let backups = JSON.parse(localStorage.getItem(BACKUP_KEY)) || [];
+
+  backups.unshift({
+    date: new Date().toISOString(),
+    data: JSON.parse(JSON.stringify(data))
+  });
+
+  // 最大5件まで
+  if (backups.length > 5) {
+    backups = backups.slice(0, 5);
+  }
+
+  localStorage.setItem(BACKUP_KEY, JSON.stringify(backups));
+}
+  
+function restoreBackup(index) {
+  const backups = JSON.parse(localStorage.getItem(BACKUP_KEY)) || [];
+  if (!backups[index]) return;
+
+  data = backups[index].data;
+  saveData();
+  render();
+  alert("バックアップから復元しました");
 }
   
 function render() {
@@ -240,6 +270,24 @@ function render() {
     option.textContent = category;
     categorySelect.appendChild(option);
   }
+  function renderBackups() {
+  const container = document.getElementById("backupList");
+  if (!container) return;
+
+  container.innerHTML = "";
+  const backups = JSON.parse(localStorage.getItem(BACKUP_KEY)) || [];
+
+  backups.forEach((b, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = new Date(b.date).toLocaleString();
+    btn.onclick = () => restoreBackup(index);
+    btn.style.display = "block";
+    btn.style.marginBottom = "5px";
+    container.appendChild(btn);
+  });
+}
+
+renderBackups();
 }
 
 function addLink() {
