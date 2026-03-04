@@ -9,7 +9,203 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 
+<style<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Home</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #1e1e2f, #2c2c3e);
+  color: white;
+}
+
+.container {
+  padding: 40px;
+}
+
+.category {
+  margin-bottom: 30px;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.category-title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.delete-category {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #ff6b6b;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.link-card {
+  background: rgba(255,255,255,0.1);
+  padding: 10px 15px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: white;
+  transition: 0.2s;
+}
+
+.link-card:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.control-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+button {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<div class="control-panel">
+  <button onclick="addCategory()">カテゴリー追加</button>
+  <button onclick="addLink()">リンク追加</button>
+</div>
+
+<script>
+const STORAGE_KEY = "myHomeData_v2";
+const BACKUP_KEY = "myHomeBackup_v2";
+
+let saved = localStorage.getItem(STORAGE_KEY);
+let data;
+
+if (saved) {
+  data = JSON.parse(saved);
+} else {
+  data = { "お気に入り": [] };
+  save();
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(BACKUP_KEY, JSON.stringify(data));
+}
+
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+
+  for (let category in data) {
+    const categoryDiv = document.createElement("div");
+    categoryDiv.className = "category";
+
+    const header = document.createElement("div");
+    header.className = "category-header";
+
+    const title = document.createElement("div");
+    title.className = "category-title";
+    title.textContent = category;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-category";
+    deleteBtn.textContent = "削除";
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (confirm("このカテゴリーを削除しますか？")) {
+        delete data[category];
+        save();
+        render();
+      }
+    };
+
+    header.appendChild(title);
+    header.appendChild(deleteBtn);
+
+    const linksDiv = document.createElement("div");
+    linksDiv.className = "links";
+
+    title.onclick = () => {
+      linksDiv.style.display =
+        linksDiv.style.display === "none" ? "flex" : "none";
+    };
+
+    data[category].forEach(link => {
+      const a = document.createElement("a");
+      a.href = link.url;
+      a.textContent = link.name;
+      a.className = "link-card";
+      a.target = "_blank";
+      linksDiv.appendChild(a);
+    });
+
+    categoryDiv.appendChild(header);
+    categoryDiv.appendChild(linksDiv);
+    app.appendChild(categoryDiv);
+  }
+}
+
+function addCategory() {
+  const name = prompt("カテゴリー名を入力");
+  if (!name) return;
+  if (data[name]) {
+    alert("すでに存在します");
+    return;
+  }
+  data[name] = [];
+  save();
+  render();
+}
+
+function addLink() {
+  const category = prompt("追加するカテゴリー名");
+  if (!data[category]) {
+    alert("そのカテゴリーは存在しません");
+    return;
+  }
+
+  const name = prompt("リンク名");
+  const url = prompt("URL");
+  if (!name || !url) return;
+
+  data[category].push({ name, url });
+  save();
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
 body{
   margin:0;
   font-family:'Noto Sans JP',sans-serif;
