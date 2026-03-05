@@ -2,267 +2,120 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Home</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
-
-<style<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Home</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<title>My home</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(135deg, #1e1e2f, #2c2c3e);
-  color: white;
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  background:#f5f5f7;
+  text-align:center;
+  margin:0;
 }
 
-.container {
-  padding: 40px;
+/* タイトル */
+h1{
+  margin-top:40px;
+  font-size:40px;
+  font-weight:600;
 }
 
-.category {
-  margin-bottom: 30px;
+/* 時計 */
+.clock{
+  font-size:70px;
+  font-weight:200;
+  margin-top:10px;
 }
 
-.category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
+.date{
+  font-size:18px;
+  color:#666;
+  margin-bottom:40px;
 }
 
-.category-title {
-  font-size: 22px;
-  font-weight: 600;
+/* ボタン */
+button{
+  padding:8px 16px;
+  margin:10px;
+  border:none;
+  border-radius:8px;
+  background:#007aff;
+  color:white;
+  cursor:pointer;
 }
 
-.delete-category {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: #ff6b6b;
-  padding: 6px 12px;
-  border-radius: 10px;
-  cursor: pointer;
+button:hover{
+  opacity:0.8;
 }
 
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+/* カテゴリー */
+.category{
+  margin-top:30px;
 }
 
-.link-card {
-  background: rgba(255,255,255,0.1);
-  padding: 10px 15px;
-  border-radius: 12px;
-  text-decoration: none;
-  color: white;
-  transition: 0.2s;
+.category h2{
+  font-size:24px;
+  margin-bottom:10px;
 }
 
-.link-card:hover {
-  background: rgba(255,255,255,0.2);
+/* リンク */
+.links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
 }
 
-.control-panel {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+.link-item{
+  background:white;
+  padding:10px 15px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-button {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: white;
-  padding: 10px 15px;
-  margin: 5px;
-  border-radius: 12px;
-  cursor: pointer;
+.link-item a{
+  text-decoration:none;
+  color:#007aff;
+  font-weight:500;
+}
+
+.delete-btn{
+  margin-left:10px;
+  background:#ff3b30;
 }
 </style>
 </head>
-<body>
 
-<div class="container" id="app"></div>
-
-<div class="control-panel">
-  <button onclick="addCategory()">カテゴリー追加</button>
-  <button onclick="addLink()">リンク追加</button>
-</div>
-
-<script>
-const STORAGE_KEY = "myHomeData_v2";
-const BACKUP_KEY = "myHomeBackup_v2";
-
-let saved = localStorage.getItem(STORAGE_KEY);
-let data;
-
-if (saved) {
-  data = JSON.parse(saved);
-} else {
-  data = { "お気に入り": [] };
-  save();
-}
-
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  localStorage.setItem(BACKUP_KEY, JSON.stringify(data));
-}
-
-function render() {
-  const app = document.getElementById("app");
-  app.innerHTML = "";
-
-  for (let category in data) {
-    const categoryDiv = document.createElement("div");
-    categoryDiv.className = "category";
-
-    const header = document.createElement("div");
-    header.className = "category-header";
-
-    const title = document.createElement("div");
-    title.className = "category-title";
-    title.textContent = category;
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "delete-category";
-    deleteBtn.textContent = "削除";
-    deleteBtn.onclick = (e) => {
-      e.stopPropagation();
-      if (confirm("このカテゴリーを削除しますか？")) {
-        delete data[category];
-        save();
-        render();
-      }
-    };
-
-    header.appendChild(title);
-    header.appendChild(deleteBtn);
-
-    const linksDiv = document.createElement("div");
-    linksDiv.className = "links";
-
-    title.onclick = () => {
-      linksDiv.style.display =
-        linksDiv.style.display === "none" ? "flex" : "none";
-    };
-
-    data[category].forEach(link => {
-      const a = document.createElement("a");
-      a.href = link.url;
-      a.textContent = link.name;
-      a.className = "link-card";
-      a.target = "_blank";
-      linksDiv.appendChild(a);
-    });
-
-    categoryDiv.appendChild(header);
-    categoryDiv.appendChild(linksDiv);
-    app.appendChild(categoryDiv);
-  }
-}
-
-function addCategory() {
-  const name = prompt("カテゴリー名を入力");
-  if (!name) return;
-  if (data[name]) {
-    alert("すでに存在します");
-    return;
-  }
-  data[name] = [];
-  save();
-  render();
-}
-
-function addLink() {
-  const category = prompt("追加するカテゴリー名");
-  if (!data[category]) {
-    alert("そのカテゴリーは存在しません");
-    return;
-  }
-
-  const name = prompt("リンク名");
-  const url = prompt("URL");
-  if (!name || !url) return;
-
-  data[category].push({ name, url });
-  save();
-  render();
-}
-
-render();
-</script>
-
-</body>
-</html>
-</style>
-</head>
 
 <body>
 
-<header>My Home</header>
-<div id="clock"></div>
-<div id="date"></div>
+<h1>My home</h1>
 
-<div class="container" id="categories"></div>
+<div class="clock" id="clock"></div>
+<div class="date" id="date"></div>
 
-<button id="editToggle">編集</button>
+<button onclick="addCategory()">カテゴリー追加</button>
+<button onclick="addLink()">リンク追加</button>
 
-<div id="editorPanel">
-<h3>リンク追加</h3>
-<input type="text" id="linkName" placeholder="名前"><br><br>
-<input type="text" id="linkURL" placeholder="URL"><br><br>
-<select id="categorySelect"></select><br><br>
-<button onclick="addCategory()">＋カテゴリー</button>
-<button onclick="addLink()">追加</button>
-
-<hr>
-<h3>自動バックアップ</h3>
-<div id="backupList"></div>
-</div>
+<div id="categories"></div>
 
 <script>
-const STORAGE_KEY="myLinkAppData_v1";
-const BACKUP_KEY="myLinkAppBackups_v1";
 
-let saved=localStorage.getItem(STORAGE_KEY);
-let data;
+const STORAGE_KEY="myhome_links";
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY))||{};
 
-if(saved){
-  data=JSON.parse(saved);
-}else{
-  data={"お気に入り":[]};
+function save(){
   localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-}
-
-function saveData(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-  let backups=JSON.parse(localStorage.getItem(BACKUP_KEY))||[];
-  backups.unshift({date:new Date().toISOString(),data:JSON.parse(JSON.stringify(data))});
-  if(backups.length>5)backups=backups.slice(0,5);
-  localStorage.setItem(BACKUP_KEY,JSON.stringify(backups));
 }
 
 function render(){
-  const categoriesDiv=document.getElementById("categories");
-  const categorySelect=document.getElementById("categorySelect");
-  categoriesDiv.innerHTML="";
-  categorySelect.innerHTML="";
+
+  const container=document.getElementById("categories");
+  container.innerHTML="";
 
   for(let category in data){
-    const catDiv=document.createElement("div");
-    catDiv.className="category";
+
+    const cat=document.createElement("div");
+    cat.className="category";
 
     const title=document.createElement("h2");
     title.textContent=category;
@@ -270,12 +123,8 @@ function render(){
     const linksDiv=document.createElement("div");
     linksDiv.className="links";
 
-    title.onclick=()=>{
-      linksDiv.style.display=
-      linksDiv.style.display==="none"?"flex":"none";
-    };
-
     data[category].forEach((link,index)=>{
+
       const item=document.createElement("div");
       item.className="link-item";
 
@@ -286,89 +135,93 @@ function render(){
 
       const del=document.createElement("button");
       del.textContent="削除";
+      del.className="delete-btn";
+
       del.onclick=()=>{
         data[category].splice(index,1);
-        saveData();
+        save();
         render();
-      };
+      }
 
       item.appendChild(a);
       item.appendChild(del);
+
       linksDiv.appendChild(item);
+
     });
 
-    catDiv.appendChild(title);
-    catDiv.appendChild(linksDiv);
-    categoriesDiv.appendChild(catDiv);
+    cat.appendChild(title);
+    cat.appendChild(linksDiv);
 
-    const opt=document.createElement("option");
-    opt.value=category;
-    opt.textContent=category;
-    categorySelect.appendChild(opt);
+    container.appendChild(cat);
+
   }
 
-  renderBackups();
-}
-
-function addLink(){
-  const name=document.getElementById("linkName").value;
-  const url=document.getElementById("linkURL").value;
-  const category=document.getElementById("categorySelect").value;
-  if(!name||!url||!category)return;
-  data[category].push({name,url});
-  saveData();
-  render();
 }
 
 function addCategory(){
+
   const name=prompt("カテゴリー名");
+
   if(!name)return;
+
   if(!data[name]){
     data[name]=[];
-    saveData();
-    render();
   }
-}
 
-function renderBackups(){
-  const container=document.getElementById("backupList");
-  container.innerHTML="";
-  const backups=JSON.parse(localStorage.getItem(BACKUP_KEY))||[];
-  backups.forEach((b,i)=>{
-    const btn=document.createElement("button");
-    btn.textContent=new Date(b.date).toLocaleString();
-    btn.style.display="block";
-    btn.style.marginBottom="5px";
-    btn.onclick=()=>restoreBackup(i);
-    container.appendChild(btn);
-  });
-}
-
-function restoreBackup(i){
-  const backups=JSON.parse(localStorage.getItem(BACKUP_KEY))||[];
-  if(!backups[i])return;
-  data=backups[i].data;
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+  save();
   render();
 }
 
-document.getElementById("editToggle").onclick=()=>{
-  const panel=document.getElementById("editorPanel");
-  panel.style.display=panel.style.display==="none"?"block":"none";
-};
+function addLink(){
+
+  const category=prompt("カテゴリー名");
+  if(!data[category]){
+    alert("そのカテゴリーは存在しません");
+    return;
+  }
+
+  const name=prompt("リンク名");
+  const url=prompt("URL");
+
+  if(!name||!url)return;
+
+  data[category].push({name,url});
+
+  save();
+  render();
+
+}
+
+/* Apple風時計 */
 
 function updateClock(){
+
   const now=new Date();
+
   const h=String(now.getHours()).padStart(2,"0");
   const m=String(now.getMinutes()).padStart(2,"0");
-  document.getElementById("clock").textContent=`${h}:${m}`;
+  const s=String(now.getSeconds()).padStart(2,"0");
+
+  document.getElementById("clock").textContent=`${h}:${m}:${s}`;
+
+  const options={
+    year:"numeric",
+    month:"long",
+    day:"numeric",
+    weekday:"long"
+  };
+
   document.getElementById("date").textContent=
-  now.toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric",weekday:"long"});
+    now.toLocaleDateString("ja-JP",options);
+
 }
 
 setInterval(updateClock,1000);
 updateClock();
+
 render();
+
 </script>
 
 </body>
