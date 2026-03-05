@@ -13,7 +13,7 @@
 body{
 margin:0;
 font-family:'Inter',sans-serif;
-background:#fde5b5;
+background:#609ac8;
 color:white;
 text-align:center;
 }
@@ -102,6 +102,7 @@ margin-top:20px;
 
 <div id="clock"></div>
 <div id="date"></div>
+<div id="weather" style="margin-top:10px; opacity:0.85;"></div>
 
 <div>
 <button onclick="addCategory()">カテゴリー追加</button>
@@ -306,6 +307,41 @@ setInterval(updateClock,1000);
 updateClock();
 
 render();
+async function updateWeather(){
+
+const lat=33.59;
+const lon=130.40;
+
+const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+
+const res=await fetch(url);
+const data=await res.json();
+
+const temp=data.current_weather.temperature;
+const code=data.current_weather.weathercode;
+
+const weatherMap={
+0:"快晴 ☀️",
+1:"晴れ 🌤",
+2:"やや曇り ⛅",
+3:"曇り ☁️",
+45:"霧 🌫",
+48:"霧 🌫",
+51:"小雨 🌦",
+61:"雨 🌧",
+63:"強い雨 🌧",
+71:"雪 ❄️"
+};
+
+const weather=weatherMap[code]||"天気";
+
+document.getElementById("weather").textContent=
+`福岡 ${weather} ${temp}°C`;
+
+}
+
+updateWeather();
+setInterval(updateWeather,600000);
 
 </script>
 
