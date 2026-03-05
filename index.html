@@ -2,218 +2,303 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>My home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Home</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
+
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:#f5f5f7;
-  text-align:center;
-  margin:0;
+margin:0;
+font-family:'Inter',sans-serif;
+background:#ffffff;
+color:white;
+text-align:center;
 }
 
-/* タイトル */
 h1{
-  margin-top:40px;
-  font-size:40px;
-  font-weight:600;
+margin-top:25px;
+font-weight:600;
+letter-spacing:2px;
 }
 
-/* 時計 */
-.clock{
-  font-size:70px;
-  font-weight:200;
-  margin-top:10px;
+#clock{
+font-size:60px;
+font-weight:300;
+margin-top:10px;
 }
 
-.date{
-  font-size:18px;
-  color:#666;
-  margin-bottom:40px;
+#date{
+opacity:0.7;
+margin-bottom:30px;
 }
 
-/* ボタン */
 button{
-  padding:8px 16px;
-  margin:10px;
-  border:none;
-  border-radius:8px;
-  background:#007aff;
-  color:white;
-  cursor:pointer;
+background:#2563eb;
+border:none;
+color:white;
+padding:8px 14px;
+margin:4px;
+border-radius:6px;
+cursor:pointer;
 }
 
-button:hover{
-  opacity:0.8;
+input,select{
+padding:6px;
+border-radius:6px;
+border:none;
+margin:4px;
 }
 
-/* カテゴリー */
 .category{
-  margin-top:30px;
+margin:30px auto;
+max-width:600px;
 }
 
 .category h2{
-  font-size:24px;
-  margin-bottom:10px;
+cursor:pointer;
+font-weight:400;
+opacity:0.9;
 }
 
-/* リンク */
 .links{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:12px;
+margin-top:10px;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
 }
 
 .link-item{
-  background:white;
-  padding:10px 15px;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+background:#1c1c2e;
+padding:10px 14px;
+border-radius:10px;
+display:flex;
+gap:10px;
+align-items:center;
 }
 
 .link-item a{
-  text-decoration:none;
-  color:#007aff;
-  font-weight:500;
+color:white;
+text-decoration:none;
 }
 
 .delete-btn{
-  margin-left:10px;
-  background:#ff3b30;
+background:#ef4444;
 }
+
+#editorPanel{
+margin-top:20px;
+}
+
 </style>
 </head>
 
-
 <body>
 
-<h1>My home</h1>
+<h1>My Home</h1>
 
-<div class="clock" id="clock"></div>
-<div class="date" id="date"></div>
+<div id="clock"></div>
+<div id="date"></div>
 
+<div>
 <button onclick="addCategory()">カテゴリー追加</button>
-<button onclick="addLink()">リンク追加</button>
+<button onclick="toggleEditor()">リンク追加</button>
+<button onclick="showBackups()">バックアップ</button>
+</div>
+
+<div id="editorPanel" style="display:none">
+
+<input id="linkName" placeholder="名前">
+<input id="linkURL" placeholder="URL">
+
+<select id="categorySelect"></select>
+
+<button onclick="addLink()">追加</button>
+
+</div>
 
 <div id="categories"></div>
 
 <script>
 
-const STORAGE_KEY="myhome_links";
+const STORAGE_KEY="myhome_data";
+const BACKUP_KEY="myhome_backups";
+
 let data=JSON.parse(localStorage.getItem(STORAGE_KEY))||{};
 
+const categoriesDiv=document.getElementById("categories");
+const categorySelect=document.getElementById("categorySelect");
+
 function save(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+
+let backups=JSON.parse(localStorage.getItem(BACKUP_KEY))||[];
+
+backups.unshift({
+time:new Date().toLocaleString(),
+data:JSON.parse(JSON.stringify(data))
+});
+
+if(backups.length>5)backups.pop();
+
+localStorage.setItem(BACKUP_KEY,JSON.stringify(backups));
+
 }
 
 function render(){
 
-  const container=document.getElementById("categories");
-  container.innerHTML="";
+categoriesDiv.innerHTML="";
+categorySelect.innerHTML="";
 
-  for(let category in data){
+for(let category in data){
 
-    const cat=document.createElement("div");
-    cat.className="category";
+const catDiv=document.createElement("div");
+catDiv.className="category";
 
-    const title=document.createElement("h2");
-    title.textContent=category;
+const title=document.createElement("h2");
+title.textContent=category;
 
-    const linksDiv=document.createElement("div");
-    linksDiv.className="links";
+const linksDiv=document.createElement("div");
+linksDiv.className="links";
 
-    data[category].forEach((link,index)=>{
+title.onclick=()=>{
+linksDiv.style.display=
+linksDiv.style.display==="none"?"flex":"none";
+};
 
-      const item=document.createElement("div");
-      item.className="link-item";
+data[category].forEach((link,index)=>{
 
-      const a=document.createElement("a");
-      a.href=link.url;
-      a.textContent=link.name;
-      a.target="_blank";
+const item=document.createElement("div");
+item.className="link-item";
 
-      const del=document.createElement("button");
-      del.textContent="削除";
-      del.className="delete-btn";
+const a=document.createElement("a");
+a.href=link.url;
+a.textContent=link.name;
+a.target="_blank";
 
-      del.onclick=()=>{
-        data[category].splice(index,1);
-        save();
-        render();
-      }
+const del=document.createElement("button");
+del.textContent="削除";
+del.className="delete-btn";
 
-      item.appendChild(a);
-      item.appendChild(del);
+del.onclick=()=>{
+data[category].splice(index,1);
+save();
+render();
+};
 
-      linksDiv.appendChild(item);
+item.appendChild(a);
+item.appendChild(del);
+linksDiv.appendChild(item);
 
-    });
+});
 
-    cat.appendChild(title);
-    cat.appendChild(linksDiv);
+catDiv.appendChild(title);
+catDiv.appendChild(linksDiv);
+categoriesDiv.appendChild(catDiv);
 
-    container.appendChild(cat);
+const option=document.createElement("option");
+option.value=category;
+option.textContent=category;
 
-  }
+categorySelect.appendChild(option);
+
+}
 
 }
 
 function addCategory(){
 
-  const name=prompt("カテゴリー名");
+const name=prompt("カテゴリー名");
 
-  if(!name)return;
+if(!name)return;
 
-  if(!data[name]){
-    data[name]=[];
-  }
+if(!data[name]){
 
-  save();
-  render();
+data[name]=[];
+
+save();
+render();
+
+}
+
 }
 
 function addLink(){
 
-  const category=prompt("カテゴリー名");
-  if(!data[category]){
-    alert("そのカテゴリーは存在しません");
-    return;
-  }
+const name=document.getElementById("linkName").value;
+const url=document.getElementById("linkURL").value;
+const cat=categorySelect.value;
 
-  const name=prompt("リンク名");
-  const url=prompt("URL");
+if(!name||!url||!cat)return;
 
-  if(!name||!url)return;
+data[cat].push({name,url});
 
-  data[category].push({name,url});
+save();
+render();
 
-  save();
-  render();
+document.getElementById("linkName").value="";
+document.getElementById("linkURL").value="";
 
 }
 
-/* Apple風時計 */
+function toggleEditor(){
+
+const panel=document.getElementById("editorPanel");
+
+panel.style.display=
+panel.style.display==="none"?"block":"none";
+
+}
+
+function showBackups(){
+
+const backups=JSON.parse(localStorage.getItem(BACKUP_KEY))||[];
+
+if(backups.length===0){
+alert("バックアップなし");
+return;
+}
+
+let text="復元する番号を入力\n\n";
+
+backups.forEach((b,i)=>{
+text+=`${i+1} : ${b.time}\n`;
+});
+
+const num=prompt(text);
+
+if(!num)return;
+
+const backup=backups[num-1];
+
+if(!backup)return;
+
+data=backup.data;
+
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+
+render();
+
+}
 
 function updateClock(){
 
-  const now=new Date();
+const now=new Date();
 
-  const h=String(now.getHours()).padStart(2,"0");
-  const m=String(now.getMinutes()).padStart(2,"0");
-  const s=String(now.getSeconds()).padStart(2,"0");
+const h=String(now.getHours()).padStart(2,"0");
+const m=String(now.getMinutes()).padStart(2,"0");
+const s=String(now.getSeconds()).padStart(2,"0");
 
-  document.getElementById("clock").textContent=`${h}:${m}:${s}`;
+document.getElementById("clock").textContent=`${h}:${m}:${s}`;
 
-  const options={
-    year:"numeric",
-    month:"long",
-    day:"numeric",
-    weekday:"long"
-  };
+const options={year:"numeric",month:"long",day:"numeric",weekday:"long"};
 
-  document.getElementById("date").textContent=
-    now.toLocaleDateString("ja-JP",options);
+document.getElementById("date").textContent=
+now.toLocaleDateString("ja-JP",options);
 
 }
 
