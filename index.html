@@ -13,7 +13,7 @@
 body{
 margin:0;
 font-family:'Inter',sans-serif;
-background:#609ac8;
+background:#fde5b5;
 color:white;
 text-align:center;
 }
@@ -108,6 +108,7 @@ margin-top:20px;
 <button onclick="addCategory()">カテゴリー追加</button>
 <button onclick="toggleEditor()">リンク追加</button>
 <button onclick="showBackups()">バックアップ</button>
+<button onclick="toggleWallpaper()">壁紙</button>
 </div>
 
 <div id="editorPanel" style="display:none">
@@ -122,6 +123,18 @@ margin-top:20px;
 </div>
 
 <div id="categories"></div>
+  <div id="wallpaperPanel" style="display:none;margin-top:20px">
+
+<h3>単色背景</h3>
+
+<input type="color" id="colorPicker">
+<br><br>
+
+<h3>写真をアップロード</h3>
+
+<input type="file" id="imageUpload" accept="image/*">
+
+</div>
 
 <script>
 
@@ -281,6 +294,18 @@ if(!backup)return;
 data=backup.data;
 
 localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+  const savedColor=localStorage.getItem("wallpaperColor");
+const savedImage=localStorage.getItem("wallpaperImage");
+
+if(savedImage){
+
+document.body.style.background=`url(${savedImage}) center/cover no-repeat fixed`;
+
+}else if(savedColor){
+
+document.body.style.background=savedColor;
+
+}
 
 render();
 
@@ -342,6 +367,47 @@ document.getElementById("weather").textContent=
 
 updateWeather();
 setInterval(updateWeather,600000);
+
+function toggleWallpaper(){
+
+const panel=document.getElementById("wallpaperPanel");
+
+panel.style.display=
+panel.style.display==="none"?"block":"none";
+
+}
+
+const colorPicker=document.getElementById("colorPicker");
+
+colorPicker.oninput=function(){
+
+document.body.style.background=colorPicker.value;
+
+localStorage.setItem("wallpaperColor",colorPicker.value);
+
+};
+
+const imageUpload=document.getElementById("imageUpload");
+
+imageUpload.onchange=function(e){
+
+const file=e.target.files[0];
+const reader=new FileReader();
+
+reader.onload=function(event){
+
+const img=event.target.result;
+
+document.body.style.background=`url(${img}) center/cover no-repeat fixed`;
+
+localStorage.setItem("wallpaperImage",img);
+
+};
+
+reader.readAsDataURL(file);
+
+};
+  
 
 </script>
 
