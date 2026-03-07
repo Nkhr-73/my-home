@@ -1,144 +1,23 @@
-
-
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>MY-home</title>
 
+<link rel="stylesheet" href="style.css">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-
-body{
-margin:0;
-font-family:'Inter',sans-serif;
-background:#fde5b5;
-color:black;
-text-align:center;
-}
-
-h1{
-margin-top:25px;
-font-weight:600;
-letter-spacing:2px;
-}
-
-#clock{
-font-size:60px;
-font-weight:300;
-margin-top:10px;
-}
-
-#date{
-opacity:0.7;
-margin-bottom:30px;
-}
-
-button{
-background:#2563eb;
-border:none;
-color:white;
-padding:8px 14px;
-margin:4px;
-border-radius:6px;
-cursor:pointer;
-}
-
-input,select{
-padding:6px;
-border-radius:6px;
-border:none;
-margin:4px;
-}
-
-.category{
-margin:30px auto;
-max-width:600px;
-}
-
-.links{
-margin-top:10px;
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:10px;
-}
-
-
-.link-item{
-display:flex;
-flex-direction:column;
-align-items:center;
-width:90px;
-}
-
-.link-icon{
-background:#1c1c2e;
-width:90px;
-height:90px;
-border-radius:16px;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.link-icon img{
-width:32px;
-height:32px;
-}
-
-.link-name{
-margin-top:6px;
-font-size:13px;
-color:black;
-text-align:center;
-word-break:break-word;
-}
-
-.delete-btn{
-background:#ef4444;
-}
-
-#editorPanel{
-margin-top:20px;
-}
-
-#news-box{
-background:rgba(255,255,255,0.85);
-padding:12px;
-border-radius:12px;
-margin:20px auto;
-max-width:600px;
-}
-
-.news-item{
-background:white;
-padding:10px;
-border-radius:10px;
-font-size:14px;
-margin:6px 0;
-box-shadow:0 2px 5px rgba(0,0,0,0.15);
-transition:0.2s;
-}
-
-.news-item:hover{
-transform:translateY(-2px);
-box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-
-.news-item a{
-color:#333;
-text-decoration:none;
-font-weight:500;
-}
-
-</style>
 </head>
 
+
 <body>
+
+<header>
 
 <h1>MY-home</h1>
 
@@ -146,44 +25,80 @@ font-weight:500;
 <div id="date"></div>
 <div id="weather"></div>
 
-<div id="news-box">
-<h2>News</h2>
-<div id="news-list"></div>
-</div>
+</header>
 
-<div>
+
+<!-- News -->
+
+<section id="news-box">
+
+<h2>News</h2>
+
+<div id="news-list"></div>
+
+</section>
+
+
+<!-- 操作ボタン -->
+
+<section id="controls">
+
 <button onclick="addCategory()">カテゴリー追加</button>
 <button onclick="toggleEditor()">リンク追加</button>
 <button onclick="showBackups()">バックアップ</button>
 <button onclick="toggleWallpaper()">壁紙</button>
-</div>
 
-<div id="editorPanel" style="display:none">
+</section>
 
-<input id="linkName" placeholder="名前">
+
+<!-- リンク追加パネル -->
+
+<section id="editorPanel" style="display:none">
+
+<h3>リンク追加</h3>
+
+<input id="linkName" placeholder="サイト名">
+
 <input id="linkURL" placeholder="URL">
 
 <select id="categorySelect"></select>
 
 <button onclick="addLink()">追加</button>
 
-</div>
+</section>
 
-<div id="categories"></div>
 
-<div id="wallpaperPanel" style="display:none;margin-top:20px">
+<!-- カテゴリー -->
+
+<main id="categories"></main>
+
+
+<!-- 壁紙 -->
+
+<section id="wallpaperPanel" style="display:none">
 
 <h3>単色背景</h3>
+
 <input type="color" id="colorPicker">
 
 <br><br>
 
-<h3>写真をアップロード</h3>
+<h3>画像背景</h3>
+
 <input type="file" id="imageUpload" accept="image/*">
 
-</div>
+</section>
+
+
+<footer>
+
 <a href="terms">利用約款</a>
+
+</footer>
+
+
 <script src="script.js"></script>
 
 </body>
+
 </html>
