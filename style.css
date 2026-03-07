@@ -1,44 +1,201 @@
+
 body{
-font-family:sans-serif;
+margin:0;
+font-family:'Inter',sans-serif;
+background:#fde5b5;
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+color:black;
 text-align:center;
-background:#f3f3f3;
 }
 
-.add-site{
-margin:20px;
+/* ヘッダー */
+
+header{
+margin-top:20px;
 }
 
-#sites{
-display:grid;
-grid-template-columns:repeat(auto-fill,90px);
-gap:15px;
+h1{
+font-weight:600;
+letter-spacing:2px;
+}
+
+#clock{
+font-size:60px;
+font-weight:300;
+margin-top:10px;
+}
+
+#date{
+opacity:0.7;
+margin-bottom:10px;
+}
+
+#weather{
+margin-bottom:20px;
+font-size:14px;
+}
+
+
+/* 操作ボタン */
+
+#controls{
+margin:20px auto;
+}
+
+button{
+background:#2563eb;
+border:none;
+color:white;
+padding:8px 14px;
+margin:4px;
+border-radius:8px;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+background:#1e4ed8;
+}
+
+.delete-btn{
+background:#ef4444;
+}
+
+
+/* 入力 */
+
+input,select{
+padding:8px;
+border-radius:8px;
+border:none;
+margin:6px;
+}
+
+
+/* カテゴリー */
+
+.category{
+margin:30px auto;
+max-width:900px;
+background:rgba(255,255,255,0.4);
+padding:20px;
+border-radius:16px;
+backdrop-filter:blur(6px);
+}
+
+.category h2{
+cursor:pointer;
+margin-bottom:10px;
+}
+
+
+/* リンクグリッド */
+
+.links{
+display:flex;
+flex-wrap:wrap;
 justify-content:center;
+gap:20px;
 }
 
-.site-card{
-width:90px;
-height:90px;
-background:white;
-border-radius:12px;
+
+/* アプリ */
+
+.link-item{
 display:flex;
 flex-direction:column;
 align-items:center;
+width:90px;
+}
+
+/* アイコン */
+
+.link-icon{
+background:#1c1c2e;
+width:90px;
+height:90px;
+border-radius:18px;
+display:flex;
+align-items:center;
 justify-content:center;
 cursor:pointer;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+transition:0.2s;
 }
 
-.site-card:hover{
-transform:scale(1.05);
+.link-icon:hover{
+transform:translateY(-4px);
+box-shadow:0 6px 14px rgba(0,0,0,0.25);
 }
 
-.site-icon{
-width:36px;
-height:36px;
-margin-bottom:6px;
+.link-icon img{
+width:32px;
+height:32px;
 }
 
-.site-title{
-font-size:12px;
+/* 名前 */
+
+.link-name{
+margin-top:6px;
+font-size:13px;
+text-align:center;
 word-break:break-word;
+}
+
+
+/* ニュース */
+
+#news-box{
+background:rgba(255,255,255,0.85);
+padding:16px;
+border-radius:16px;
+margin:20px auto;
+max-width:600px;
+}
+
+.news-item{
+background:white;
+padding:12px;
+border-radius:12px;
+font-size:14px;
+margin:8px 0;
+box-shadow:0 2px 5px rgba(0,0,0,0.15);
+transition:0.2s;
+}
+
+.news-item:hover{
+transform:translateY(-3px);
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.news-item a{
+color:#333;
+text-decoration:none;
+font-weight:500;
+}
+
+
+/* 編集パネル */
+
+#editorPanel{
+margin-top:20px;
+}
+
+#wallpaperPanel{
+margin-top:20px;
+}
+
+
+/* フッター */
+
+footer{
+margin-top:40px;
+opacity:0.7;
+font-size:14px;
+}
+
+footer a{
+color:black;
+text-decoration:none;
 }
