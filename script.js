@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
 const STORAGE_KEY="myhome_data";
@@ -53,9 +54,21 @@ item.className="link-item";
 
 const a=document.createElement("a");
 a.href=link.url;
-a.textContent=link.name;
 a.target="_blank";
 
+const iconBox=document.createElement("div");
+iconBox.className="link-icon";
+
+const icon=document.createElement("img");
+icon.src="https://www.google.com/s2/favicons?sz=64&domain="+link.url;
+
+iconBox.appendChild(icon);
+a.appendChild(iconBox);
+
+const name=document.createElement("div");
+name.className="link-name";
+name.textContent=link.name;
+  
 const del=document.createElement("button");
 del.textContent="削除";
 del.className="delete-btn";
@@ -291,6 +304,9 @@ function loadNews(){
 fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www3.nhk.or.jp/rss/news/cat0.xml")
 .then(res=>res.json())
 .then(newsData=>{
+.catch(()=>{
+document.getElementById("news-list").innerHTML="ニュース取得失敗";
+});
 
 const list=document.getElementById("news-list");
 
@@ -322,3 +338,11 @@ loadNews();
 render();
 
 });
+document.getElementById("linkURL").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addLink();
+}
+});
+item.appendChild(a);
+item.appendChild(name);
+item.appendChild(del);
