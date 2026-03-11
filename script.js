@@ -5,6 +5,8 @@ const STORAGE_KEY="myhome_data";
 const BACKUP_KEY="myhome_backups";
 
 let linkData=JSON.parse(localStorage.getItem(STORAGE_KEY))||{};
+let draggedIndex=null;
+let draggedCategory=null;
 
 const categoriesDiv=document.getElementById("categories");
 const categorySelect=document.getElementById("categorySelect");
@@ -57,6 +59,28 @@ linkData[category].forEach((link,index)=>{
 
 const item=document.createElement("div");
 item.className="link-item";
+item.draggable=true;
+item.addEventListener("dragstart",()=>{
+draggedIndex=index;
+draggedCategory=category;
+});
+
+item.addEventListener("dragover",(e)=>{
+e.preventDefault();
+});
+
+item.addEventListener("drop",()=>{
+
+if(draggedCategory!==category)return;
+
+const moved=linkData[category].splice(draggedIndex,1)[0];
+
+linkData[category].splice(index,0,moved);
+
+save();
+render();
+
+});
 
 const a=document.createElement("a");
 a.href=link.url;
