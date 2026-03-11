@@ -206,3 +206,29 @@ footer a{
 color:black;
 text-decoration:none;
 }
+
+/*goole検索*/
+
+#search-box{
+margin:20px auto;
+}
+
+#searchForm{
+display:flex;
+justify-content:center;
+gap:8px;
+}
+
+#searchInput{
+width:320px;
+max-width:80%;
+padding:10px;
+border-radius:12px;
+border:none;
+font-size:14px;
+}
+
+#searchForm button{
+padding:10px 16px;
+border-radius:12px;
+}
