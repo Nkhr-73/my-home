@@ -409,6 +409,28 @@ document.getElementById("news-list").innerHTML="ニュース取得失敗";
 
 loadNews();
 
+/*google検索*/
+  
+const searchForm=document.getElementById("searchForm");
+
+if(searchForm){
+
+searchForm.addEventListener("submit",(e)=>{
+
+e.preventDefault();
+
+const query=document.getElementById("searchInput").value;
+
+if(!query)return;
+
+window.open(
+"https://www.google.com/search?q="+encodeURIComponent(query),
+"_blank"
+);
+
+});
+
+}
 
 /* 初期描画 */
 
