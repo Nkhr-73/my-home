@@ -109,13 +109,6 @@ flex-direction:column;
 align-items:center;
 width:90px;
 }
-.link-item{
-cursor:grab;
-}
-
-.link-item:active{
-cursor:grabbing;
-}
 
 /* アイコン */
 
@@ -153,28 +146,33 @@ word-break:break-word;
 
 /* ニュース */
 
-.news-container{
-  width:300px;
-  margin:auto;
-}
-
-.news-view{
-  height:120px; /* 2件分 */
-  overflow:hidden;
-  position:relative;
-}
-
-.news-list{
-  display:flex;
-  flex-direction:column;
-  transition:transform 0.6s;
+#news-box{
+background:rgba(255,255,255,0.85);
+padding:16px;
+border-radius:16px;
+margin:20px auto;
+max-width:600px;
 }
 
 .news-item{
-  height:60px;
-  padding:5px;
-  border-bottom:1px solid #ddd;
-  font-size:14px;
+background:white;
+padding:12px;
+border-radius:12px;
+font-size:14px;
+margin:8px 0;
+box-shadow:0 2px 5px rgba(0,0,0,0.15);
+transition:0.2s;
+}
+
+.news-item:hover{
+transform:translateY(-3px);
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.news-item a{
+color:#333;
+text-decoration:none;
+font-weight:500;
 }
 
 
@@ -200,30 +198,4 @@ font-size:14px;
 footer a{
 color:black;
 text-decoration:none;
-}
-
-/*goole検索*/
-
-#search-box{
-margin:20px auto;
-}
-
-#searchForm{
-display:flex;
-justify-content:center;
-gap:8px;
-}
-
-#searchInput{
-width:320px;
-max-width:80%;
-padding:10px;
-border-radius:12px;
-border:none;
-font-size:14px;
-}
-
-#searchForm button{
-padding:10px 16px;
-border-radius:12px;
 }
