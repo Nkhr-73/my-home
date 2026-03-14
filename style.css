@@ -158,22 +158,29 @@ background:rgba(255,255,255,0.85);
 padding:16px;
 border-radius:16px;
 margin:20px auto;
-max-width:600px;
+max-width:900px;
+overflow:hidden;
+}
+
+#news-list{
+display:flex;
+gap:12px;
+overflow-x:auto;
+padding:10px 0;
 }
 
 .news-item{
+min-width:250px;
 background:white;
 padding:12px;
 border-radius:12px;
 font-size:14px;
-margin:8px 0;
 box-shadow:0 2px 5px rgba(0,0,0,0.15);
 transition:0.2s;
 }
 
 .news-item:hover{
 transform:translateY(-3px);
-box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
 .news-item a{
