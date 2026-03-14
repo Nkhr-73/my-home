@@ -384,7 +384,7 @@ if(!list)return;
 
 list.innerHTML="";
 
-newsData.items.slice(0,6).forEach(news=>{
+newsData.items.slice(0,10).forEach(news=>{
 
 const div=document.createElement("div");
 div.className="news-item";
