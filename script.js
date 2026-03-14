@@ -5,8 +5,6 @@ const STORAGE_KEY="myhome_data";
 const BACKUP_KEY="myhome_backups";
 
 let linkData=JSON.parse(localStorage.getItem(STORAGE_KEY))||{};
-let draggedIndex=null;
-let draggedCategory=null;
 
 const categoriesDiv=document.getElementById("categories");
 const categorySelect=document.getElementById("categorySelect");
@@ -59,28 +57,6 @@ linkData[category].forEach((link,index)=>{
 
 const item=document.createElement("div");
 item.className="link-item";
-item.draggable=true;
-item.addEventListener("dragstart",()=>{
-draggedIndex=index;
-draggedCategory=category;
-});
-
-item.addEventListener("dragover",(e)=>{
-e.preventDefault();
-});
-
-item.addEventListener("drop",()=>{
-
-if(draggedCategory!==category)return;
-
-const moved=linkData[category].splice(draggedIndex,1)[0];
-
-linkData[category].splice(index,0,moved);
-
-save();
-render();
-
-});
 
 const a=document.createElement("a");
 a.href=link.url;
@@ -370,93 +346,57 @@ document.body.style.background=savedColor;
 
 /* ニュース */
 
-const newsAPI="https://newsapi.org/v2/top-headlines?country=jp&pageSize=10&apiKey=YOUR_API_KEY";
+function loadNews(){
 
-let newsIndex=0;
+fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www3.nhk.or.jp/rss/news/cat0.xml")
 
-async function loadNews(){
+.then(res=>res.json())
 
-const res=await fetch(newsAPI);
-const data=await res.json();
+.then(newsData=>{
 
-const news=data.articles;
+const list=document.getElementById("news-list");
 
-const newsList=document.getElementById("newsList");
+if(!list)return;
 
-news.forEach(n=>{
+list.innerHTML="";
+
+newsData.items.slice(0,6).forEach(news=>{
 
 const div=document.createElement("div");
 div.className="news-item";
 
-div.innerHTML=
-`<a href="${n.url}" target="_blank">${n.title}</a>`;
+div.innerHTML=`
+<a href="${news.link}" target="_blank">
+${news.title}
+</a>
+`;
 
-newsList.appendChild(div);
+list.appendChild(div);
 
 });
 
-startSlide(news.length);
+})
 
-}
-
-function startSlide(length){
-
-setInterval(()=>{
-
-newsIndex++;
-
-const list=document.getElementById("newsList");
-
-list.style.transform=`translateY(-${newsIndex*60}px)`;
-
-if(newsIndex>=length-2){
-
-newsIndex=0;
-
-setTimeout(()=>{
-
-list.style.transition="none";
-list.style.transform="translateY(0)";
-
-setTimeout(()=>{
-list.style.transition="0.6s";
-},50);
-
-},600);
-
-}
-
-},4000);
+.catch(()=>{
+document.getElementById("news-list").innerHTML="ニュース取得失敗";
+});
 
 }
 
 loadNews();
 
-/*google検索*/
-  
-const searchForm=document.getElementById("searchForm");
-
-if(searchForm){
-
-searchForm.addEventListener("submit",(e)=>{
-
-e.preventDefault();
-
-const query=document.getElementById("searchInput").value;
-
-if(!query)return;
-
-window.open(
-"https://www.google.com/search?q="+encodeURIComponent(query),
-"_blank"
-);
-
-});
-
-}
 
 /* 初期描画 */
 
 render();
 
+/*カーソル表示*/
+  
+const searchInput=document.getElementById("searchInput");
+
+if(searchInput){
+searchInput.value="";
+searchInput.focus();
+}
+  
 });
