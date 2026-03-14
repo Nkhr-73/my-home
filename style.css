@@ -153,40 +153,28 @@ word-break:break-word;
 
 /* ニュース */
 
-#news-box{
-background:rgba(255,255,255,0.85);
-padding:16px;
-border-radius:16px;
-margin:20px auto;
-max-width:900px;
-overflow:hidden;
+.news-container{
+  width:300px;
+  margin:auto;
 }
 
-#news-list{
-display:flex;
-gap:12px;
-overflow-x:auto;
-padding:10px 0;
+.news-view{
+  height:120px; /* 2件分 */
+  overflow:hidden;
+  position:relative;
+}
+
+.news-list{
+  display:flex;
+  flex-direction:column;
+  transition:transform 0.6s;
 }
 
 .news-item{
-min-width:250px;
-background:white;
-padding:12px;
-border-radius:12px;
-font-size:14px;
-box-shadow:0 2px 5px rgba(0,0,0,0.15);
-transition:0.2s;
-}
-
-.news-item:hover{
-transform:translateY(-3px);
-}
-
-.news-item a{
-color:#333;
-text-decoration:none;
-font-weight:500;
+  height:60px;
+  padding:5px;
+  border-bottom:1px solid #ddd;
+  font-size:14px;
 }
 
 
