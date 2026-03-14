@@ -346,17 +346,19 @@ document.body.style.background=savedColor;
 
 /* ニュース */
 
-function loadNews
-  const newsList=document.getElementById("newsList");
+const newsList=document.getElementById("newsList");
 
 let newsIndex=0;
 
 async function loadNews(){
 
 const res=await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://news.yahoo.co.jp/rss/topics/top-picks.xml");
+
 const data=await res.json();
 
-data.items.slice(0,10).forEach(n=>{
+const news=data.items.slice(0,10);
+
+news.forEach(n=>{
 
 const div=document.createElement("div");
 div.className="news-item";
@@ -367,7 +369,7 @@ newsList.appendChild(div);
 
 });
 
-startSlide(data.items.length);
+startSlide(news.length);
 
 }
 
@@ -383,17 +385,16 @@ if(newsIndex>=length-2){
 
 newsIndex=0;
 
-setTimeout(()=>{
-newsList.style.transition="none";
 newsList.style.transform="translateY(0)";
-setTimeout(()=>newsList.style.transition="0.6s",50);
-},600);
 
 }
 
 },4000);
 
 }
+
+loadNews();
+
 
 loadNews();
 
