@@ -346,44 +346,57 @@ document.body.style.background=savedColor;
 
 /* ニュース */
 
-function loadNews(){
+function loadNews
+  const newsList=document.getElementById("newsList");
 
-fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www3.nhk.or.jp/rss/news/cat0.xml")
+let newsIndex=0;
 
-.then(res=>res.json())
+async function loadNews(){
 
-.then(newsData=>{
+const res=await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://news.yahoo.co.jp/rss/topics/top-picks.xml");
+const data=await res.json();
 
-const list=document.getElementById("news-list");
-
-if(!list)return;
-
-list.innerHTML="";
-
-newsData.items.slice(0,6).forEach(news=>{
+data.items.slice(0,10).forEach(n=>{
 
 const div=document.createElement("div");
 div.className="news-item";
 
-div.innerHTML=`
-<a href="${news.link}" target="_blank">
-${news.title}
-</a>
-`;
+div.innerHTML=`<a href="${n.link}" target="_blank">${n.title}</a>`;
 
-list.appendChild(div);
+newsList.appendChild(div);
 
 });
 
-})
+startSlide(data.items.length);
 
-.catch(()=>{
-document.getElementById("news-list").innerHTML="ニュース取得失敗";
-});
+}
+
+function startSlide(length){
+
+setInterval(()=>{
+
+newsIndex++;
+
+newsList.style.transform=`translateY(-${newsIndex*60}px)`;
+
+if(newsIndex>=length-2){
+
+newsIndex=0;
+
+setTimeout(()=>{
+newsList.style.transition="none";
+newsList.style.transform="translateY(0)";
+setTimeout(()=>newsList.style.transition="0.6s",50);
+},600);
+
+}
+
+},4000);
 
 }
 
 loadNews();
+
 
 
 /* 初期描画 */
