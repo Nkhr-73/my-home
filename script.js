@@ -400,6 +400,38 @@ list.appendChild(div);
 });
 
 })
+/* 自動ニュース取得*/
+
+let newsIndex=0;
+
+function showNews(news){
+
+const newsList=document.getElementById("newsList");
+
+news.forEach(n=>{
+const div=document.createElement("div");
+div.className="news-item";
+div.innerHTML=`<a href="${n.url}" target="_blank">${n.title}</a>`;
+newsList.appendChild(div);
+});
+
+setInterval(()=>{
+newsIndex++;
+newsList.style.transform=`translateY(-${newsIndex*60}px)`;
+
+if(newsIndex>=news.length-2){
+newsIndex=0;
+setTimeout(()=>{
+newsList.style.transition="none";
+newsList.style.transform="translateY(0)";
+setTimeout(()=>newsList.style.transition="0.6s",50);
+},600);
+}
+
+},4000);
+
+}
+
 
 .catch(()=>{
 document.getElementById("news-list").innerHTML="ニュース取得失敗";
