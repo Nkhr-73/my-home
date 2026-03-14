@@ -370,40 +370,63 @@ document.body.style.background=savedColor;
 
 /* ニュース */
 
-function loadNews(){
+const newsAPI="https://newsapi.org/v2/top-headlines?country=jp&pageSize=10&apiKey=YOUR_API_KEY";
 
-fetch("https://api.rss2json.com/v1/api.json?rss_url=https://www3.nhk.or.jp/rss/news/cat0.xml")
+let newsIndex=0;
 
-.then(res=>res.json())
+async function loadNews(){
 
-.then(newsData=>{
+const res=await fetch(newsAPI);
+const data=await res.json();
 
-const list=document.getElementById("news-list");
+const news=data.articles;
 
-if(!list)return;
+const newsList=document.getElementById("newsList");
 
-list.innerHTML="";
-
-newsData.items.slice(0,10).forEach(news=>{
+news.forEach(n=>{
 
 const div=document.createElement("div");
 div.className="news-item";
 
-div.innerHTML=`
-<a href="${news.link}" target="_blank">
-${news.title}
-</a>
-`;
+div.innerHTML=
+`<a href="${n.url}" target="_blank">${n.title}</a>`;
 
-list.appendChild(div);
+newsList.appendChild(div);
 
 });
 
-})
+startSlide(news.length);
 
-.catch(()=>{
-document.getElementById("news-list").innerHTML="ニュース取得失敗";
-});
+}
+
+function startSlide(length){
+
+setInterval(()=>{
+
+newsIndex++;
+
+const list=document.getElementById("newsList");
+
+list.style.transform=`translateY(-${newsIndex*60}px)`;
+
+if(newsIndex>=length-2){
+
+newsIndex=0;
+
+setTimeout(()=>{
+
+list.style.transition="none";
+list.style.transform="translateY(0)";
+
+setTimeout(()=>{
+list.style.transition="0.6s";
+},50);
+
+},600);
+
+}
+
+},4000);
 
 }
 
