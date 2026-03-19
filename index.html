@@ -1,67 +1,104 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY-home | ダッシュボード</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MY-home</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
 </head>
 
+
 <body>
-    <header class="main-header">
-        <h1>MY-home</h1>
-        <div class="info-bar">
-            <div id="clock">--:--</div>
-            <div id="date">----/--/--</div>
-            <div id="weather">Loading weather...</div>
-        </div>
-    </header>
 
-    <main class="container">
-        <section id="news-box" class="card">
-            <h2>News</h2>
-            <div id="news-list"></div>
-        </section>
+<header>
 
-        <section id="categories" class="link-grid">
-            </section>
-    </main>
+<h1>MY-home</h1>
 
-    <nav class="controls">
-        <button id="btn-add-category">カテゴリー追加</button>
-        <button id="btn-toggle-editor">リンク追加</button>
-        <button id="btn-show-backups">バックアップ</button>
-        <button id="btn-toggle-wallpaper">壁紙設定</button>
-    </nav>
+<div id="clock"></div>
+<div id="date"></div>
+<div id="weather"></div>
 
-    <aside class="overlay-panels">
-        <section id="editorPanel" class="panel hidden">
-            <h3>リンク追加</h3>
-            <div class="form-group">
-                <input type="text" id="linkName" placeholder="サイト名">
-                <input type="url" id="linkURL" placeholder="https://example.com">
-                <select id="categorySelect"></select>
-                <button id="btn-add-link">追加</button>
-            </div>
-        </section>
+</header>
 
-        <section id="wallpaperPanel" class="panel hidden">
-            <h3>背景設定</h3>
-            <div class="setting-item">
-                <label>単色背景: <input type="color" id="colorPicker"></label>
-            </div>
-            <div class="setting-item">
-                <label>画像背景: <input type="file" id="imageUpload" accept="image/*"></label>
-            </div>
-        </section>
-    </aside>
 
-    <footer class="main-footer">
-        <a href="terms">利用規約</a>
-    </footer>
+<!-- News -->
 
-    <script src="script.js"></script>
+<section id="news-box">
+
+<h2>News</h2>
+
+<div id="news-list"></div>
+
+</section>
+
+
+<!-- 操作ボタン -->
+
+<section id="controls">
+
+<button onclick="addCategory()">カテゴリー追加</button>
+<button onclick="toggleEditor()">リンク追加</button>
+<button onclick="showBackups()">バックアップ</button>
+<button onclick="toggleWallpaper()">壁紙</button>
+
+</section>
+
+
+<!-- リンク追加パネル -->
+
+<section id="editorPanel" style="display:none">
+
+<h3>リンク追加</h3>
+
+<input id="linkName" placeholder="サイト名">
+
+<input id="linkURL" placeholder="URL">
+
+<select id="categorySelect"></select>
+
+<button onclick="addLink()">追加</button>
+
+</section>
+
+
+<!-- カテゴリー -->
+
+<main id="categories"></main>
+
+
+<!-- 壁紙 -->
+
+<section id="wallpaperPanel" style="display:none">
+
+<h3>単色背景</h3>
+
+<input type="color" id="colorPicker">
+
+<br><br>
+
+<h3>画像背景</h3>
+
+<input type="file" id="imageUpload" accept="image/*">
+
+</section>
+
+
+<footer>
+
+<a href="terms">利用約款</a>
+
+</footer>
+
+
+<script src="script.js"></script>
+
 </body>
+
 </html>
