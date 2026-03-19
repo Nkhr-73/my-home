@@ -31,43 +31,131 @@ color:white;
 text-decoration:none;
 border-radius:6px;
 }
+  .tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #333;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  background: #555;
+}
+
+.tab-content {
+  background: rgba(0,0,0,0.6);
+  padding: 15px;
+  border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>MY-home 利用約款</h1>
+<section id="terms">
 
-<div class="section">
-<h2>1. サービスについて</h2>
-<p>
-MY-homeは、ユーザーが自分の好きなサイトへ簡単にアクセスするためのホームページサービスです。
-</p>
+  <h1>MY-home</h1>
+
+  <!-- タブ -->
+  <div class="tabs">
+    <button onclick="showTab('terms')">利用規約</button>
+    <button onclick="showTab('privacy')">プライバシー</button>
+    <button onclick="showTab('history')">変更履歴</button>
+  </div>
+
+  <!-- 利用規約 -->
+  <div class="tab-content" id="terms-content">
+    <h2>利用規約</h2>
+    <p>
+第１条　更新
+　本サービスは予告なく更新、停止を行う場合があります。
+  その場合に生じたいかなる損害についても本サイト（以下＝甲）はお客様（以下＝乙）の責任を負いません。
+第２条　データ
+  本サービスはブラウザのlocalstageに保存を行っています。
+  ブラウザを変更した場合にデータが削除される可能性を乙は了承します。
+第３条　法律
+  本サイトに関して行われる裁判は第一審を福岡地方裁判所とします。
+  なお、法律は日本国の法に準拠します。
+第４条　利用許可
+  このサイトは利用規約に同意した場合のみ利用できることとします。
+    </p>
+  </div>
+
+  <!-- プライバシー -->
+  <div class="tab-content" id="privacy-content" style="display:none;">
+    <h2>プライバシーポリシー</h2>
+    <p>本サイトはお客様に対してデータの収集等を行う場合があります。</p>
+  </div>
+
+  <!-- 変更履歴 -->
+  <div class="tab-content" id="history-content" style="display:none;">
+    <h2>変更履歴</h2>
+    <ul>
+      <li>
+2026/03/19　Ver.1.0.3
+20：42
+利用規約の表示方法を変更
+プライバシーポリシー、変更履歴を表示させるよう変更
+20：22
+HP内のニュースの表示方法を変更
+軽微なバグを修正
+2026/03/12　Ver.1.0.2
+8：05
+ドラッグですることでフォルダ内のアイコンの順番が変更できる機能を追加
+google検索機能を追加
+2026/03/08　Ver.1.0.1
+8：00
+ニュースが表示されなくなるなどいくつかの問題を修正
+サイトアイコンを自動取得して表示させる機能を追加
+サイトアイコンの形を正方形に修正
+軽微なバグを修正
+2026 03/05 Ver.1.0.0
+22:40
+利用約款を追加
+22:31
+News配信機能を追加
+18：25
+googleアナリティクスにて分析開始
+18：15
+Instagramで一般に公開
+18：04
+背景色変更機能と壁紙を写真で反映できる機能を追加
+17：54
+天気を表示する機能を追加
+17：49
+色彩の関係で時計が表示されない問題を修正
+17:40　
+my-homeサイト公開
+バックアップ機能の追加
+</li>
+    </ul>
+  </div>
+
+</section>
+  
 </div>
-
-<div class="section">
-<h2>2. データ保存について</h2>
-<p>
-登録されたリンクなどのデータはブラウザのLocalStorageに保存されます。
-そのため、ブラウザを変更した場合などはデータが引き継がれないことがあります。
-</p>
-</div>
-
-<div class="section">
-<h2>3. 免責事項</h2>
-<p>
-本サービスの利用によって生じた損害について、開発者は責任を負いません。
-</p>
-</div>
-
-<div class="section">
-<h2>4. サービスの変更</h2>
-<p>
-MY-homeは予告なく仕様変更・停止することがあります。
-</p>
-</div>
-
+  
 <a href="index" class="back">MY-homeに戻る</a>
 
+<script>function showTab(tab) {
+  document.getElementById("terms-content").style.display = "none";
+  document.getElementById("privacy-content").style.display = "none";
+  document.getElementById("history-content").style.display = "none";
+
+  document.getElementById(tab + "-content").style.display = "block";
+}
+</script>
+  
 </body>
 </html>
+ver.1.0.3
+最終更新日　2026/03/19
